@@ -1,0 +1,102 @@
+<script>
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Anlia',
+      usingComponents: {
+        'wxc-list': '../../packages/@minui/wxc-list/dist/index',
+        'wxc-icon': '../../packages/@minui/wxc-icon/dist/index'
+      }
+    }
+    components = {}
+
+    mixins = [testMixin]
+
+    data = {
+      check: true
+    }
+
+    computed = {}
+
+    methods = {
+      onCheck() {
+        let check = this.data.check
+        this.setData({
+          check: !check
+        })
+      }
+    }
+    events = {}
+
+    onLoad() {}
+  }
+</script>
+
+
+<template>
+  <view class="list-wrap">
+    <view class="list-item">
+      <view class="list-check">
+        <image class="list-image radius" mode="aspectFill" src="http://s2.mogucdn.com/new1/v1/bdefaultavatar/04.jpg"></image>
+        <wxc-list class="item" title="安利本人" detail="人工智能应答" desc="2013-1-2 13:11" arrow="{{false}}"></wxc-list>
+      </view>
+      <view class="list-check">
+        <image class="list-image radius" mode="aspectFill" src="http://s2.mogucdn.com/new1/v1/bdefaultavatar/04.jpg"></image>
+        <wxc-list class="item" title="小红" detail="你在干撒？" desc="2013-1-2 13:11" arrow="{{false}}"></wxc-list>
+      </view>
+      <view class="list-check">
+        <image class="list-image radius" mode="aspectFill" src="http://s3.mogucdn.com/mlcdn/1689c6/180330_8gak8gf7809jhfi8i0l90i79bca3g_400x400.jpg"></image>
+        <wxc-list class="item" title="小兰" detail="我在上海，你呢？" desc="2013-1-2 12:11" arrow="{{false}}"></wxc-list>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<style>
+  .list-wrap {
+    width: 100%;
+    background: #efefef;
+  }
+  .list-item {
+    background: #fff;
+    margin-bottom: 30rpx;
+  }
+  .list-item:last-child {
+    margin: 0;
+  }
+
+  .list-check {
+    display: flex;
+    align-items: center;
+  }
+  .list-check:active {
+    background: #ECECEC;
+  }
+  .check {
+    position: absolute;
+    top: 0;
+    left: -2rpx;
+    width: 100%;
+    height: 100%;
+    line-height: 42rpx;
+  }
+  .list-image {
+    width: 95rpx;
+    height: 95rpx;
+    margin-left: 30rpx;
+  }
+  .radius {
+    border-radius: 20px;
+  }
+  .item {
+    flex: 1;
+  }
+  .list-image {
+    width: 102rpx;
+    height: 102rpx;
+    background: #d8d8d8;
+  }
+</style>

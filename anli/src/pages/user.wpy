@@ -1,0 +1,304 @@
+<script>
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Anlia',
+      usingComponents: {
+        'wxc-list': '../../packages/@minui/wxc-list/dist/index',
+        'wxc-icon': '../../packages/@minui/wxc-icon/dist/index',
+        'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
+        'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
+        'wxc-label': '../../packages/@minui/wxc-label/dist/index',
+        'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
+        'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
+        'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
+        'wxc-tab': '../../packages/@minui/wxc-tab/dist/index',
+        'wxc-button': '../../packages/@minui/wxc-button/dist/index'
+      }
+    }
+    components = {}
+
+    mixins = [testMixin]
+
+    data = {
+      name: '王小波',
+      labels: [
+        {title: '电影', color: '#ff0077'},
+        {title: '动漫', color: '#747bb1'},
+        {title: '动画', color: '#19be6b'},
+        {title: '漫画', color: '#ff9900'},
+        {title: '画集', color: '#ed3f14'}
+      ],
+      anlis: [
+        {
+          anli_id: '1',
+          anli_class: '电影',
+          user_id: '23123',
+          user_name: '小兰',
+          background: '#495060',
+          exhibits_image: 'https://images.uiiiuiii.com/wp-content/uploads/2017/10/itz-poster20171006-2-8.jpg',
+          comment: '我推荐这个作品是因为这个作品,按实际打开房间爱上就爱上离开.房间爱离开房间辣椒飒飒发，所以暗示法卡视角打开方了解阿斯利康的发生快乐绝地反击按时。'
+        },
+        {
+          anli_id: '2',
+          anli_class: '电影',
+          user_id: '23124',
+          user_name: '小兰',
+          background: '#495060',
+          exhibits_image: 'http://img2.mtime.cn/up/885/1114885/27CF938F-4182-41F5-BBBA-43B84DC39826_500.jpg',
+          comment: '没什么好说的'
+        },
+        {
+          anli_id: '3',
+          anli_class: '电影',
+          user_id: '23125',
+          user_name: '小兰',
+          background: '#5cadff',
+          exhibits_image: 'http://www.sinaimg.cn/dy/slidenews/4_img/2016_05/704_1844566_708349.jpg',
+          comment: '很好看哦'
+        }
+      ],
+      questions: [
+        {
+          question: '你最喜欢的一部电影是？',
+          class: '电影',
+          instanceid: '1',
+          background: '#495060',
+          exhibits_image: 'https://images.uiiiuiii.com/wp-content/uploads/2017/10/itz-poster20171006-2-8.jpg',
+          desc: '这是一部bulabula'
+        },
+        {
+          question: '你最喜欢的电影明星是？',
+          class: '明星',
+          instanceid: '2',
+          background: '#456734',
+          exhibits_image: 'http://img2.mtime.cn/up/885/1114885/27CF938F-4182-41F5-BBBA-43B84DC39826_500.jpg',
+          desc: '牟大逃杀电影的男主角。。'
+        },
+        {
+          question: '你看过最老的电影是？',
+          class: '电影',
+          instanceid: '3',
+          background: '#5cadff',
+          exhibits_image: 'http://www.sinaimg.cn/dy/slidenews/4_img/2016_05/704_1844566_708349.jpg',
+          desc: '这是一部阿士大夫艰苦奋斗'
+        }
+      ]
+    }
+
+    computed = {}
+
+    methods = {
+      onClick: function(e) {
+        console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
+      },
+      recommend (id, image) {
+        this.$navigate({url: 'anli?id=' + id + '&image=' + image})
+      },
+      show_instance (instanceid, instanceimage) {
+        this.$navigate({url: 'instance?instanceid=' + instanceid + '&instanceimage=' + instanceimage})
+      },
+      classRecommend (classname) {
+        this.$navigate({url: 'anliByClass?classname=' + classname})
+      }
+    }
+    events = {}
+
+    onLoad() {}
+  }
+</script>
+
+
+<template class="wrap">
+  <view class="wrap" >
+    <wxc-flex class="wrap" dir="top">
+      <view class="item side">
+        <view class="user-info"> 
+          <wxc-panel border="{{false}}">
+            <wxc-cc class="layout">
+              <view>
+                <image class="user-pic" src="https://s11.mogucdn.com/p2/170413/upload_86dkh4e886991g9lji7a6g5c530ji_400x400.jpg" mode="aspectFit"></image>
+                <view class="user-name">王小波</view>
+                <view class="label-list">
+                  <wxc-flex dir="left">
+                    <wxc-label class="label" wx:for="{{labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" label="{{label.title}}" type-color="{{label.color}}">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </view>
+              </view>
+            </wxc-cc>
+          </wxc-panel>
+        </view>
+      </view>
+      <view class="item main">
+        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="c2" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="c2" tab-index="0" label="安利">
+            <view class="tool">
+              <wxc-flex main="left">
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="筛选"></wxc-button>
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新安利+"></wxc-button>
+              </wxc-flex>
+            </view>
+            <view class="exhibits" style="background:{{anli.background}}" wx:for="{{anlis}}" wx:for-item="anli" wx:key="title" label-index="{{index}}" @tap="recommend({{anli.anli_id}},{{anli.exhibits_image}})">
+              <wxc-flex dir="left">
+                <image class="exhibits-image" src="{{anli.exhibits_image}}"></image>
+              </wxc-flex>
+            </view>
+          </wxc-tab-panel>
+          <wxc-tab-panel component-id="c2" tab-index="1" label="信息">
+            <view class="tool">
+              <wxc-flex main="left">
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新卡片+"></wxc-button>
+              </wxc-flex>
+            </view>
+            <view class="exhibits" wx:for="{{questions}}" wx:for-item="question" wx:key="question_id" label-index="{{index}}" @tap="show_instance({{question.instanceid}},{{question.exhibits_image}})" style="background:{{question.background}}">
+              <wxc-flex dir="top">
+                <wxc-flex main="between">
+                  <view class="question">{{question.question}}</view>
+                  <wxc-label class="class-label" type-color="#ffffff">{{question.class}}</wxc-label>
+                </wxc-flex>
+                <wxc-flex dir="left">
+                    <image class="exhibits-image" src="{{question.exhibits_image}}"></image>
+                    <view class="decs">{{question.desc}}</view>
+                  </wxc-flex>
+                </view>
+              </wxc-flex>
+            </view>
+          </wxc-tab-panel>
+          <wxc-tab-panel component-id="c2" tab-index="2" label="圈子">
+            <view class="tool">
+              <wxc-flex dir="left">
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="创建新圈子"></wxc-button>
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="加入新圈子+"></wxc-button>
+              </wxc-flex>
+            </view>
+            <view class="exhibits circle" wx:for="{{labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" label="{{label.title}}" @tap="classRecommend({{label.title}})">
+              <wxc-flex main="between">
+                <view></view>
+                <wxc-label class="class-label" type-color="{{label.color}}">{{label.title}}</wxc-label>
+              </wxc-flex>
+            </view>
+          </wxc-tab-panel>
+        </wxc-tab>
+      </view>
+    </wxc-flex>
+  </view>
+</template>
+
+<style>
+  .wrap {
+    display: block;
+    background: #ffffff;
+  }
+  .item {
+    font-size: 28rpx;
+    line-height: 100%;
+    text-align: center;
+  }
+  .side {
+    width: 100%;
+    height: 350rpx;
+    background: #ffffff;
+    flex-grow: 0;
+  }
+  .main {
+    background: #ffffff;
+    flex-grow: 1;
+  }
+  .anli-item {
+    width: 98%;
+    height: 570rpx;
+    margin: 1%;
+    margin-bottom: 2%;
+    flex-grow: 0;
+    border-radius:3rpx;
+    box-shadow:0 0 7rpx #D7D7D7;
+    background: white;
+  }
+  .user-info {
+    width: 98%;
+    height: 96%;
+    margin: 1%;
+    margin-bottom: 2%;
+  }
+  .avatar {
+    display: inline-block;
+    width: 180rpx;
+    height: 180rpx;
+    margin-top: 20rpx;
+  }
+  .name {
+    margin-top: 10rpx;
+  }
+  .layout {
+    display: block;
+    width: 100%;
+  }
+  .user-pic {
+    width: 200rpx;
+    height: 200rpx;
+    margin: 15rpx;
+    border-radius: 100%;
+    box-shadow: 0 0 5rpx #333333;
+  }
+  .user-name {
+    text-align: center;
+  }
+  .label-list {
+    text-align: center;
+    margin-top: 15rpx;
+  }
+  .label {
+    margin-left: 15rpx;
+  }
+  .tool {
+    width: 90%;
+    background: #ffffff;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+  }
+  .exhibits {
+    color: #ffffff;
+    width: 90%;
+    background: #000000;
+    text-align: left;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .circle {
+    height: 300rpx;
+  }
+  .exhibits:active{
+    box-shadow: 0 0 10rpx #999999;
+  }
+  .exhibits-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #333333;
+  }
+  .question {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    font-size: 32rpx;
+  }
+  .decs {
+    margin-left: 3%;
+    margin-top: 25rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+  }
+  .class-label {
+    margin-top: 17rpx;
+    margin-right: 17rpx;
+  }
+</style>
