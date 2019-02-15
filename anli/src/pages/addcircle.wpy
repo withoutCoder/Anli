@@ -1,0 +1,113 @@
+<template>
+<form bindsubmit="formSubmit" bindreset="formReset" class="container">
+  <view class="section">
+    <view class="section__title">name</view>
+    <input name="name"/>
+  </view>
+  <view class="section section_gap">
+    <view class="section__title">color</view>
+    <wxc-flex dir="top">
+      <radio-group name="color">
+        <view>
+          <radio value="#495060" />
+          #495060
+        </view>
+        <view>
+          <radio value="#5cadff" />
+          #5cadff
+        </view>
+        <view>
+          <radio value="#ffffff" />
+          #ffffff
+        </view>
+        <view>
+          <radio value="#ed3f14" />
+          #ed3f14
+        </view>
+      </radio-group>
+    </wxc-flex>
+  </view>
+  <view class="btn-area">
+    <button form-type="submit">Submit</button>
+    <button form-type="reset">Reset</button>
+  </view>
+</form>
+</template>
+
+<script>
+import wepy from 'wepy'
+import testMixin from '../mixins/test'
+
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '添加新卡片',
+    usingComponents: {
+      'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
+      'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
+      'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
+      'wxc-input': '../../packages/@minui/wxc-input/dist/index'
+    }
+  }
+
+  components = {}
+
+  mixins = [testMixin]
+
+  data = {}
+
+  addCircle(name) {
+    var that = this
+    wepy.request({
+      url: 'http://192.168.0.106:8080/users/addCircle',
+      data: {
+        openId: this.$parent.globalData.openId,
+        name: name
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      success (res) {
+        this.globalData.userInfo.circleList.push(name)
+        that.$apply()
+      }
+    })
+  }
+  methods = {
+    formSubmit(e) {
+      var that = this
+      wepy.request({
+        url: 'http://192.168.0.106:8080/circle/insert',
+        data: {
+          openId: this.$parent.globalData.openId,
+          name: e.detail.value.name,
+          color: e.detail.value.color,
+          attributes: '属性1,属性2,属性3'
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          that.addCircle(e.detail.value.name)
+          console.log('创建新圈子：', e.detail.value)
+        }
+      })
+    },
+    formReset() {
+      console.log('form发生了reset事件')
+    }
+  }
+
+  onLoad() {}
+}
+</script>
+
+<style>
+  .container {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  .input-wrap {
+    background: #fff;
+  }
+</style>

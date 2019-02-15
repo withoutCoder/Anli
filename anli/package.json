@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "description": "A WePY project",
   "main": "dist/app.js",
+  "private": true,
   "scripts": {
     "dev": "wepy build --watch",
     "build": "cross-env NODE_ENV=production wepy build --no-cache",
@@ -23,6 +24,7 @@
     "@minui/wxc-elip": "^1.0.5",
     "@minui/wxc-flex": "^1.0.6",
     "@minui/wxc-icon": "^1.0.9",
+    "@minui/wxc-input": "^1.0.2",
     "@minui/wxc-label": "^1.0.5",
     "@minui/wxc-list": "^1.0.1",
     "@minui/wxc-panel": "^1.0.1",
@@ -34,7 +36,7 @@
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",
     "wepy": "^1.6.0",
-    "wepy-async-function": "^1.4.4",
+    "wepy-async-function": "^1.4.7",
     "wepy-com-toast": "^1.0.2",
     "wepy-redux": "^1.5.3"
   },

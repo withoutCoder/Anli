@@ -14,6 +14,7 @@ module.exports = {
   plugins: [
     'html'
   ],
+  globals: { getApp: true },
   settings: {
     'html/html-extensions': ['.html', '.wpy']
   },

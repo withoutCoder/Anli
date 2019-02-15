@@ -1,4 +1,5 @@
 <style lang="less">
+@import './style/weui.less';
 .container {
   height: 100%;
   display: flex;
@@ -7,28 +8,87 @@
   justify-content: space-between;
   box-sizing: border-box;
 }
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1550136798390'); /* IE9 */
+  src: url('iconfont.eot?t=1550136798390#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAg8AAsAAAAADrwAAAfvAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCEHAqOfIwtATYCJAMwCxoABCAFhG0HgREbiAwzA8LGAVBkPIbsv0rg5pDWQQcEtVG1Iw+nVcet42beURt34psFQElg7FVddyKmiivfRHEJPnwW/H/ubefmJfkvhVKKglXMWorDohbhUAKH6s7j3C5G8QmIUz8TPJbzCCYWLM5JBRrTrEQFbHGs4dlm/4gV4FLFufXdqetm2cRVBN413G8VL3qpP9xFJsiPbgMg0c377zf1u4YxJ0ymjGv/ttMTehDCOB5cuq7fr9Wv0xFrunj7vZz428fcYmoRz2StEJKJRi5UPBIpuaMw3D6w4lWhB0OgOqYgKN/rBhexDqHB0kx63BIrBriJR2ePDeOmD/x4+BbuA3hX3l9fcCOHIEWwh3p6qYYe5jjB+JEfa1vhs0sGLrOBgQmIF372dL6C6eURqedDzYDOBfFBdGGxZBFh9M1xi/s8O6xsqXTL3D9526CoXCOBiZJsgFLAOlV/8hvmAlFeSICowAuIgmOhiULD3zxCwPkgAnABCAMuBBGBi0Ak4A4QGShgOEOVNtgFewjNGZbD6qkRpSI2mCxNWrvoC4Vseru0dLK6d7odVy9UuouONhJEnHmEIXpSz9kojnUdMHPcHjGSYXr3WWhm12kTu8a9X3RhdrdgoOmevUkM7Txj5iRpt0NL2xzkGNYhkVM4SdQxk+y8lh5lt/dLenaNLNMGreW0jAl6BylJZMqlWIfUb9ft8li0/fdSUsgUCVdVzutlI83CK612Z4/+qZe1r6oocyUJ14h23oYRgoM2ybiA7WaJaMZvKPEj98q5hOAyjt7jNmewkPqs/oTC8AcNE+EwqRBijbGrBf2XosYcuJpfw0btUaHDVzHhPMhramzUDBHHlSxEvJSzqvU3zpPmwrjdfkfSsgoX5hcKhYmDkahzAAtNIvi1HNd/D8f71ZR2JVuSrI7opbKlpec2TkfbdvWSYzB+UHRbXcLAEgSDCaCBcUQDrSAqsR6sKAwu6srsJ8RTZIVUgttAvN5RB+UarMdSahP05S4TdtObiBxR6zU3lASasNl4e8foC+lmGLq6+nnLaaHYVd6etqv8yl61W1UZVWGeKLQsrxEVtlq8LFNJyaHClPZoB4SLjD27HVYrdlJWcU4tgAS51CvTj2VGUSoVcQbmQtIZscRdoXKc/Rpqe7suerE1WJ6ET5X8RHIGeBEJgqyOsfzA8OA+l3GM1W3WQMRxORre9yRPc0qNQ7Co1LOjY3V/Hjlnelf9OX+D96/Mv4hO/c1b35p6zun/jB1999NJoGTSKdO3twLCqe+ajpzTneTsd9OWjJ/42cZvp1WFoST2xp0cQKEl2z8bDmvJK/AroaBhnjsGLPBu2KuB+j9BN3QW3f31Q4//T/9y/9S41EDGmaptYNembSGfR7+0zDPOz5FPL8o6u5rFjsDqaWQH56ueOoLopJ0hO6qKlrZtK5ghHaO2gGZ074+PjiPQQdvBBp4LSg46F05guUVWdLj1e+Dm/+TCoJ8e6QNp8OqaIo87fAUENkAzQsk6aNJ0aOO60B+L2kG1bs3od8vdgedjV78f6A66F5gc79Z+S/bcGJMdO/sLz4cceHUz0R7lPztmmCUb4jZsGQ8bgPP0D1FGjAIpR8yOFaoLh+4Ju/YeHtkMz5wL1dUUUVRoaTdUT74wJ2a0neRL1NqM+9oJ/HuP2bIbsCEZuEAKCF8Bu6CV4SB8JaTM9lZw7GaD7sO6yCUtZ8ZEOhUTX2dcUpq+1KCLrzVumspsq5+xde3CPPK99PfShAZAa5uTPIefCTz5pKcKGjkJajAyq4+cWAVNDqxLuxhiCrmYVhcwxVOZuJNJ2dcDqppCJx9Eyy9aLpajL04JNVOA0Zkc1hOm/dRpnsi7wlxBEwPPhp0NOHnfCSgb0pdxL+1prv2qc/2E+Z1ft9QwOyzn3s4T0CaoLntD2IRRf9QZHdM7/qxwMSh7PVyLNOcJIGMKVTDJ3NpinhaAUmkrF3fzRbRgb66ZrFlJ5Rx2tjdQtTXNxd1DOSv9Kw2W6dta628FdFcu5Mu5uB+pkrmm6zM6/kht1bCsDVAt2pQnvl3GNbY1tFSgyuT5E9Z3fak661tszcu4b3IFtBmurcLN/rcyqxrkPn1wzPO+9n1ioXXhCq1Pu2LrsjXY++T72DHiu2HTdfc7EOo+Cvu2yV8bc4yHiqrwP8t2/i9PVRFmzAEbfmQGgO+W3UVSTu6KufMAQLb/PcQjr1old77PZ7zXUgvhT32Pa7Qe2UqNSJ8BP/hpWQgsXXzpgwkhpb8F4v82BW+K7Pu0a/T0TBd2DuSHhGJNgLD1bWHt/TMwBH1CI8zZ1aR7JmGLA6hcJowkc517EXwrsulXi28ZEAyOwLhLMaoTSJopZO6+oLqmCZs3G6wwigtwxQEgq1wgWPYLZpWrGNUbJNv8IVuVQTVTxA6bgyaZQ3VCwXiB/gFGUlB8Ah/Uht+oJyeS2aL4/2PKpgCasrZXfGDAlMUq+apbZgUqkYd35nDoHEFMNKLkcmCOXVUpr1VLSX52qE4oWAp/AfqH1kgKamQ+ON7+G/XkRAro8aX9x5TN9IGGkjqC+MFCpB6r0jxfdQuTZAVCcSKv8XeajI4rJSB6zzei5JIhQXHsqEhvKiori+d+jI8CKvsksD4PMkUlZQ1yFVU1dS3heaBJiqD3apVmczeChIDlU4TVCs2Gp2hE2D4x6BEHOp5PX0U0QbspbBxdsei3ckyz6dWcogA=') format('woff2'),
+  url('iconfont.woff?t=1550136798390') format('woff'),
+  url('iconfont.ttf?t=1550136798390') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1550136798390#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 22px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shoucang:before {
+  content: "\e86d";
+}
+
+.icon-shoucang1:before {
+  content: "\e86e";
+}
+
+.icon-xiaoxi:before {
+  content: "\e86f";
+}
+
+.icon-zan:before {
+  content: "\e870";
+}
+
+.icon-zan1:before {
+  content: "\e871";
+}
+
+.icon-tupian:before {
+  content: "\e889";
+}
+
+.icon-zengjia:before {
+  content: "\e88a";
+}
+
+.icon-BAI-pinglun:before {
+  content: "\e6bd";
+}
+
+.icon-love-b:before {
+  content: "\e60b";
+}
+
+.icon-love-b1:before {
+  content: "\e60c";
+}
+
+.icon-icon--:before {
+  content: "\e70d";
+}
+
+
 </style>
 
 <script>
 import wepy from 'wepy'
-import 'wepy-async-function'
 
-import { setStore } from 'wepy-redux'
-import configStore from './store'
-
-const store = configStore()
-setStore(store)
-
-export default class extends wepy.app {
+export default class Index extends wepy.app {
   config = {
     pages: [
+      'pages/authorize',
+      'pages/user',
       'pages/homepage',
       'pages/notice',
-      'pages/user',
       'pages/anli',
       'pages/userinfo',
-      'pages/anliByClass',
-      'pages/instance'
+      'pages/circle',
+      'pages/instance',
+      'pages/addcard',
+      'pages/addInstance',
+      'pages/addcircle'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -59,44 +119,21 @@ export default class extends wepy.app {
       }]
     }
   }
+  components = {}
+
+  onLaunch() {}
 
   globalData = {
-    userInfo: null
+    userInfo: null,
+    urlPath: 'https://www.baidu.com/',
+    openId: ''
   }
+  computed = {}
 
-  constructor () {
-    super()
-    this.use('requestfix')
-  }
+  methods = {}
 
-  onLaunch() {
-    this.testAsync()
-  }
+  events = {}
 
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
-  getUserInfo(cb) {
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
-    }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
-      }
-    })
-  }
+  onLoad() {}
 }
 </script>

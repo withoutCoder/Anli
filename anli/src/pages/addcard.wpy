@@ -1,0 +1,146 @@
+<template>
+  <view class="exhibits" wx:for="{{cards}}" wx:for-item="card" wx:key="cardId" label-index="{{index}}" @tap="show_instance({{card.instanceId}},{{card.picturePath}})">
+    <wxc-flex dir="top">
+      <wxc-flex main="between">
+        <view class="question">{{card.question}}</view>
+        <wxc-label class="class-label" type-color="#ffffff">{{card.circleId}}</wxc-label>
+      </wxc-flex>
+      <wxc-flex dir="left">
+        
+      </wxc-flex>
+      </view>
+    </wxc-flex>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import testMixin from '../mixins/test'
+
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '添加新卡片',
+    usingComponents: {
+      'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
+      'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
+      'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
+      'wxc-input': '../../packages/@minui/wxc-input/dist/index'
+    }
+  }
+
+  components = {}
+
+  mixins = [testMixin]
+
+  data = {
+    cards: [
+      {
+        cardId: '0',
+        userId: '',
+        question: '你最喜欢的一部电影是？',
+        instanceId: '4123',
+        picturePath: 'https://images.uiiiuiii.com/wp-content/uploads/2017/10/itz-poster20171006-2-8.jpg',
+        answer: ''
+      },
+      {
+        cardId: '2',
+        userId: '',
+        question: '你最喜欢的电影明星是？',
+        instanceId: '1231',
+        picturePath: 'http://img2.mtime.cn/up/885/1114885/27CF938F-4182-41F5-BBBA-43B84DC39826_500.jpg',
+        answer: ''
+      },
+      {
+        cardId: '1',
+        userId: '',
+        question: '你看过最老的电影是？',
+        instanceId: '1231',
+        picturePath: 'http://www.sinaimg.cn/dy/slidenews/4_img/2016_05/704_1844566_708349.jpg',
+        answer: ''
+      }
+    ]
+  }
+
+  methods = {}
+
+  createInstance() {
+    for (var p in this.cards) {
+      console.log(this.cards[p].name)
+      wepy.request({
+        url: 'http://192.168.0.106:8080/instances/insert',
+        data: {
+          instanceId: parseInt(Math.random() * 10000),
+          name: this.cards[p].name,
+          circleList: [1, 2, 3, 4, 5],
+          picturePath: this.cards[p].picturePath,
+          decs: [
+            '导演: 王莽',
+            '编剧: 周星驰',
+            '主演: 电鳗',
+            '上映时间: 2018-9-6',
+            '片长: 152分钟',
+            '类型: 恐怖/悬疑',
+            '介绍: 小丑中计现身想杀死丹特，却被高登和蝙蝠侠阻止并被逮捕。蝙蝠侠开始审问小丑，他透露瑞秋和丹特已被带到城市的两端，并放置了两个遥控爆裂物，之间的距离让蝙蝠侠无法同时救他们。蝙蝠侠立即出发去救瑞秋，同时高登和警察去救丹特。但小丑故意将瑞秋与丹特的位置说反，让两人救的对象相反。通过炸弹的掩护，小丑和刘先生顺利逃出警局。蝙蝠侠即时救到丹特，但丹特被火烧掉了左半张脸，被送往医院。高登却没救到瑞秋，让她在爆炸中身亡。丹特因瑞秋的死陷入疯狂。此时小丑来到医院释放了丹特，并说服他必须向警察、黑帮、高登和蝙蝠侠复仇，丹特成为了双面人。'
+          ]
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          console.log(res.data)
+        }
+      })
+    }
+  }
+
+  formSubmit(e) {
+    console.log('form发生了submit事件，携带数据为：', e.detail.value)
+  }
+
+  onLoad() {}
+}
+</script>
+
+<style>
+   .exhibits {
+    color: #ffffff;
+    width: 90%;
+    background: #000000;
+    text-align: left;
+    height: 300rpx;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .exhibits:active{
+    box-shadow: 0 0 10rpx #999999;
+  }
+  .exhibits-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #333333;
+  }
+  .question {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    font-size: 32rpx;
+  }
+  .decs {
+    margin-left: 3%;
+    margin-top: 25rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+  }
+  .class-label {
+    margin-top: 17rpx;
+    margin-right: 17rpx;
+  }
+</style>

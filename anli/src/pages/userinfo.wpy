@@ -26,6 +26,7 @@
       id: '',
       name: '',
       image: '',
+      circles: null,
       labels: [
         {title: '电影', color: '#ff0077'},
         {title: '动漫', color: '#747bb1'},
@@ -109,13 +110,11 @@
     events = {}
 
     onLoad(p) {
-      console.log(p.id)
-      console.log(p.name)
-      console.log(p.image)
       this.id = p.id
       this.name = p.name
       this.image = p.image
     }
+    onshow() {}
   }
 </script>
 

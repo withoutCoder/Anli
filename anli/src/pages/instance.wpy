@@ -23,8 +23,16 @@
     mixins = [testMixin]
 
     data = {
+      isFold: true,
       instanceid: '',
-      instanceimage: ''
+      instanceimage: '',
+      labels: [
+        {title: '电影', color: '#ff0077'},
+        {title: 'dc', color: '#747bb1'},
+        {title: '漫改', color: '#19be6b'},
+        {title: '蝙蝠侠', color: '#ff9900'},
+        {title: '超级英雄', color: '#ed3f14'}
+      ]
     }
 
     computed = {}
@@ -32,9 +40,17 @@
     methods = {
       onClick: function(e) {
         console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
+      },
+      classRecommend (classname) {
+        this.$navigate({url: 'anliByClass?classname=' + classname})
       }
     }
     events = {}
+
+    showAll () {
+      this.isFold = !this.isFold
+      console.log(this.data.isFold)
+    }
 
     onLoad(p) {
       console.log(p.instanceid)
@@ -47,24 +63,49 @@
 
 
 <template>
-  <view class="wrap" >
+  <view class="wrap">
     <wxc-flex class="wrap" dir="top">
       <view class="item side">
-        <view class="user-info"> 
-          <wxc-panel border="{{false}}">
-            <wxc-cc>
-              <view>
-                <image class="exhibits-image" src="{{instanceimage}}" mode="aspectFit"></image>
-                <view class="user-name">{{instanceid}}</view>
-              </view>
-            </wxc-cc>
-          </wxc-panel>
-        </view>
+        <image class="instance-image" src="{{instanceimage}}"></image>
       </view>
       <view class="item main">
         <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
           <wxc-tab-panel component-id="circle" tab-index="0" label="介绍">
-            <view class="exhibits circle"></view>
+            <view class="exhibits">
+              <wxc-flex dir="top">
+                <text class="title">蝙蝠侠：黑暗骑士</text>
+                <text class="introduce">(2008)</text>
+                <view class="label-list">
+                  <wxc-flex dir="left">
+                    <wxc-label class="label" wx:for="{{labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" label="{{label.title}}" type-color="#ffffff" tapbind="classRecommend({{label.title}})">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </view>
+                <!--<view class="long-dec {{isFold?'hide':'show'}}">-->
+                <view class="introduce s2">
+                  导演：克里斯托弗·诺兰
+                </view>
+                <view class="introduce s2">
+                  编剧: 乔纳森·诺兰 / 克里斯托弗·诺兰 / 大卫·S·高耶
+                </view>
+                <view class="introduce s2">
+                  主演: 克里斯蒂安·贝尔 / 希斯·莱杰 / 艾伦·艾克哈特 / 迈克尔·凯恩 / 玛吉·吉伦哈尔 
+                </view>
+                <view class="introduce s2">
+                  上映日期: 2008-07-14(纽约首映) / 2008-07-18(美国)
+                </view>
+                <view class="introduce s2">
+                  片长: 152分钟 
+                </view>
+                <view class="introduce s2">
+                  类型: 剧情 / 动作 / 科幻 / 惊悚 / 犯罪 
+                </view>
+                <view class="introduce s2">
+                  介绍：当蝙蝠侠顺利抓住逃回香港的刘并转交给高登后，黑道同意雇用小丑杀死蝙蝠侠。此时小丑向全高谭市宣布，只要蝙蝠侠一天不自首，往后每天都会有人死亡。当小丑暗杀了警长罗伯和审判黑帮的法官等公众官员后，布鲁斯决定自首。在他自首前，丹特抢先宣称自己就是蝙蝠侠，希望借此引出小丑。小丑中计现身想杀死丹特，却被高登和蝙蝠侠阻止并被逮捕。蝙蝠侠开始审问小丑，他透露瑞秋和丹特已被带到城市的两端，并放置了两个遥控爆裂物，之间的距离让蝙蝠侠无法同时救他们。蝙蝠侠立即出发去救瑞秋，同时高登和警察去救丹特。但小丑故意将瑞秋与丹特的位置说反，让两人救的对象相反。通过炸弹的掩护，小丑和刘先生顺利逃出警局。蝙蝠侠即时救到丹特，但丹特被火烧掉了左半张脸，被送往医院。高登却没救到瑞秋，让她在爆炸中身亡。丹特因瑞秋的死陷入疯狂。此时小丑来到医院释放了丹特，并说服他必须向警察、黑帮、高登和蝙蝠侠复仇，丹特成为了双面人。
+                </view>
+                <!--<wxc-button class="introduce" type="secondary" value="{{isFold?'展开':'缩起'}}" @tap="showAll()"></wxc-button>-->
+
+              </wxc-flex>
+            </view>
           </wxc-tab-panel>
           <wxc-tab-panel component-id="circle" tab-index="1" label="安利">
             <view class="exhibits circle"></view>
@@ -90,9 +131,7 @@
   }
   .side {
     width: 100%;
-    height: 350rpx;
     background: #ffffff;
-    flex-grow: 0;
   }
   .main {
     background: #ffffff;
@@ -108,20 +147,73 @@
     box-shadow:0 0 7rpx #D7D7D7;
     background: white;
   }
-  .user-info {
-    width: 98%;
-    height: 96%;
-    margin: 1%;
-    margin-bottom: 2%;
-  }
-  .avatar {
-    display: inline-block;
-    width: 180rpx;
-    height: 180rpx;
+  .instance-image {
+    width: 158rpx;
+    height: 220rpx;
+    background: #334433;
     margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 10rpx;
+    box-shadow: 0 0 4rpx #333333;
   }
-  .name {
-    margin-top: 10rpx;
+  .exhibits {
+    color: #ffffff;
+    width: 90%;
+    background: #666666;
+    text-align: left;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 35rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .title {
+    margin-top: 30rpx;
+    margin-left: 35rpx;
+    margin-right: 35rpx;
+    font-size: 42rpx;
+    color: #ffffff;
+  }
+  .long-dec{
+    margin-left: 20rpx;
+    margin-right: 20rpx;
+    margin-bottom: 20rpx;
+    display: -webkit-box;
+    font-size:22rpx;
+    color:#ffffff;
+    line-height: 40rpx;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:6;
+    overflow: hidden;
+    text-overflow:ellipsis;
+  }
+  .hide{
+    display: -webkit-box;
+  }
+  .show{
+    display: block;
+  }
+  .arrow{
+     position: absolute;
+     width: 40rpx;
+     height: 43rpx;
+     left: 50%;
+     transform: translate(-50%);
+  }
+  .introduce {
+    margin-top: 20rpx;
+    margin-left: 35rpx;
+    margin-right: 35rpx;
+    font-size: 32rpx;
+    color: #ffffff;
+  }
+  .s2 {
+    font-size: 28rpx;
+    margin-bottom: 20rpx;
+    letter-spacing: 3rpx;
+    line-height: 38rpx;
+    font-weight: 200;
   }
   .layout {
     display: block;
@@ -129,7 +221,7 @@
   }
   .user-pic {
     width: 130rpx;
-    height: 180rpx;
+    height: 200rpx;
     margin: 15rpx;
     box-shadow: 0 0 5rpx #333333;
   }
@@ -138,7 +230,8 @@
   }
   .label-list {
     text-align: center;
-    margin-top: 15rpx;
+    margin-top: 20rpx;
+    margin-left: 20rpx;
   }
   .label {
     margin-left: 15rpx;
@@ -149,40 +242,16 @@
     margin-left: 20rpx;
     margin-top: 20rpx;
   }
-  .exhibits {
-    color: #ffffff;
-    width: 90%;
-    background: #000000;
-    text-align: left;
-    margin-left: 5%;
-    margin-top: 20rpx;
-    margin-bottom: 20rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
-  }
   .circle {
     height: 300rpx;
   }
   .exhibits:active{
     box-shadow: 0 0 10rpx #999999;
   }
-  .exhibits-image {
-    width: 130rpx;
-    height: 180rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
-  }
   .question {
     margin-left: 20rpx;
     margin-top: 20rpx;
     font-size: 32rpx;
-  }
-  .decs {
-    margin-left: 3%;
-    margin-top: 25rpx;
-    letter-spacing: 2rpx;
-    line-height: 34rpx;
-    font-weight: 200;
   }
   .class-label {
     margin-top: 17rpx;

@@ -1,76 +1,67 @@
 <script>
-  import wepy from 'wepy'
-  import testMixin from '../mixins/test'
+import wepy from 'wepy'
+import testMixin from '../mixins/test'
 
-  export default class Index extends wepy.page {
-    config = {
-      navigationBarTitleText: 'Anlia',
-      usingComponents: {
-        'wxc-list': '../../packages/@minui/wxc-list/dist/index',
-        'wxc-icon': '../../packages/@minui/wxc-icon/dist/index',
-        'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
-        'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
-        'wxc-label': '../../packages/@minui/wxc-label/dist/index',
-        'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
-        'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
-        'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
-        'wxc-tab': '../../packages/@minui/wxc-tab/dist/index',
-        'wxc-button': '../../packages/@minui/wxc-button/dist/index'
-      }
-    }
-    components = {}
-
-    mixins = [testMixin]
-
-    data = {
-      id: '',
-      image: ''
-    }
-
-    computed = {}
-
-    methods = {
-      onClick: function(e) {
-        console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
-      },
-      show_instance (instanceid, instanceimage) {
-        this.$navigate({url: 'instance?instanceid=' + instanceid + '&instanceimage=' + instanceimage})
-      }
-    }
-    events = {}
-
-    onLoad(p) {
-      console.log(p.id)
-      console.log(p.image)
-      this.id = p.id
-      this.image = p.image
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: 'Anlia',
+    usingComponents: {
+      'wxc-list': '../../packages/@minui/wxc-list/dist/index',
+      'wxc-icon': '../../packages/@minui/wxc-icon/dist/index',
+      'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
+      'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
+      'wxc-label': '../../packages/@minui/wxc-label/dist/index',
+      'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
+      'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
+      'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
+      'wxc-tab': '../../packages/@minui/wxc-tab/dist/index',
+      'wxc-button': '../../packages/@minui/wxc-button/dist/index'
     }
   }
+  components = {}
+
+  mixins = [testMixin]
+
+  data = {
+    id: '',
+    image: ''
+  }
+
+  computed = {}
+
+  methods = {
+    onClick: function(e) {
+      console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
+    },
+    show_instance (instanceid, instanceimage) {
+      this.$navigate({url: 'instance?instanceid=' + instanceid + '&instanceimage=' + instanceimage})
+    }
+  }
+  events = {}
+
+  onLoad(p) {
+    console.log(p.id)
+    console.log(p.image)
+    this.id = p.id
+    this.image = p.image
+  }
+}
 </script>
 
 
 <template>
-  <view class="wrap" >
+  <view class="wrap">
     <wxc-flex class="wrap" dir="top">
       <view class="item side">
-        <view class="user-info"> 
-          <wxc-panel border="{{false}}">
-            <wxc-cc>
-              <view>
-                <image class="exhibits-image" src="{{image}}" mode="aspectFit" @tap="show_instance({{id}},{{image}})"></image>
-                <view class="user-name">{{id}}</view>
-              </view>
-            </wxc-cc>
-          </wxc-panel>
-        </view>
+        <image class="instance-image" src="{{image}}"></image>
       </view>
       <view class="item main">
         <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="安利理由">
+          <wxc-tab-panel component-id="circle" tab-index="0" label="详情">
             <view class="exhibits circle"></view>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="安利评论">
-            <view class="exhibits circle" style="background:#333366;"></view>
+          <wxc-tab-panel component-id="circle" tab-index="1" label="评论">
+            <view class="exhibits circle"></view>
           </wxc-tab-panel>
         </wxc-tab>
       </view>
@@ -152,11 +143,11 @@
   .exhibits {
     color: #ffffff;
     width: 90%;
-    background: #000000;
+    background: #666666;
     text-align: left;
     margin-left: 5%;
     margin-top: 20rpx;
-    margin-bottom: 20rpx;
+    margin-bottom: 35rpx;
     border-radius: 9rpx;
     box-shadow: 0 0 4rpx #bfbfbf;
   }
@@ -166,11 +157,14 @@
   .exhibits:active{
     box-shadow: 0 0 10rpx #999999;
   }
-  .exhibits-image {
-    width: 130rpx;
-    height: 180rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
+  .instance-image {
+    width: 158rpx;
+    height: 220rpx;
+    background: #334433;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 10rpx;
+    box-shadow: 0 0 4rpx #333333;
   }
   .question {
     margin-left: 20rpx;

@@ -1,0 +1,126 @@
+<template>
+  <view wx:if="{{canIUse}}">
+    <wxc-cc>
+      <button type="primary" size="default" plain="false" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
+        授权登陆
+      </button>
+    </wxc-cc>
+  </view>
+  <view wx:else>请升级微信版本</view>
+</template>
+
+<style>
+</style>
+
+<script>
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Anlia',
+      usingComponents: {
+        'wxc-cc': '../../packages/@minui/wxc-cc/dist/index'
+      }
+    }
+    components = {}
+
+    mixins = [testMixin]
+
+    data = {
+      canIUse: wepy.canIUse('button.open-type.getUserInfo'),
+      isSign: false
+    }
+    computed = {}
+
+    events = {}
+
+    onLoad() {
+      let getopen = new Promise((resolve, reject) => {
+        wepy.login({
+          success (e) {
+            wepy.request({
+              url: 'http://192.168.0.106:8080/users/getOpenId',
+              data: {
+                code: e.code
+              },
+              header: {
+                'content-type': 'application/json'
+              },
+              success (result) {
+                resolve(result)
+                console.log('get open id status:' + result.statusCode)
+                this.globalData.openId = result.data.openid
+                console.log('openId:' + this.globalData.openId)
+              }
+            })
+          }
+        })
+      })
+      getopen.then((r) => {
+        console.log('正在获取用户<' + r.data.openid + '>的个人信息')
+        wepy.request({
+          url: 'http://192.168.0.106:8080/users/login',
+          data: {
+            openId: r.data.openid
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (result) {
+            if (result.data !== '') {
+              console.log('登陆用户昵称:' + result.data.nickName)
+              this.globalData.userInfo = result.data
+              wepy.switchTab({
+                url: 'user'
+              })
+            }
+          }
+        })
+      })
+    }
+
+    bindGetUserInfo(e) {
+      console.log('bindGetUserInfo')
+      if (e.detail.userInfo) {
+        console.log('正在授权' + e.detail.userInfo.nickName)
+        wepy.request({
+          url: 'http://192.168.0.106:8080/users/signUp',
+          data: {
+            openId: this.$parent.globalData.openId,
+            nickName: e.detail.userInfo.nickName,
+            gender: e.detail.userInfo.gender,
+            avatarUrl: e.detail.userInfo.avatarUrl,
+            circleList: ''
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            console.log('status:' + res.statusCode)
+            console.log('nickName:' + e.detail.userInfo.nickName)
+            this.globalData.userInfo = e.detail.userInfo
+            this.globalData.userInfo.circleList = []
+            wepy.switchTab({
+              url: 'user'
+            })
+          }
+        })
+      } else {
+        console.log('拒绝授权')
+        wepy.showModal({
+          title: '警告',
+          content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+          showCancel: false,
+          confirmText: '返回授权',
+          success(res) {
+            if (res.confirm) {
+              console.log('用户点击了“返回授权”')
+            }
+          }
+        })
+      }
+    }
+    methods = {}
+  }
+</script>

@@ -1,0 +1,313 @@
+<script>
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Anlia',
+      usingComponents: {
+        'wxc-list': '../../packages/@minui/wxc-list/dist/index',
+        'wxc-icon': '../../packages/@minui/wxc-icon/dist/index',
+        'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
+        'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
+        'wxc-label': '../../packages/@minui/wxc-label/dist/index',
+        'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
+        'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
+        'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
+        'wxc-tab': '../../packages/@minui/wxc-tab/dist/index',
+        'wxc-button': '../../packages/@minui/wxc-button/dist/index'
+      }
+    }
+    components = {}
+
+    mixins = [testMixin]
+
+    data = {
+      name: '',
+      circleInfo: null,
+      itemList: null,
+      hasCircle: false,
+      isManager: false
+    }
+
+    computed = {}
+    addCircle() {
+      var that = this
+      wepy.request({
+        url: 'http://192.168.0.106:8080/users/addCircle',
+        data: {
+          openId: this.$parent.globalData.openId,
+          name: this.circleInfo.name
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          console.log(this.globalData.userInfo.circleList)
+          this.globalData.userInfo.circleList.push(that.circleInfo.name)
+          console.log(this.globalData.userInfo.circleList)
+          that.hasCircle = true
+          that.itemList = ['退出圈子', '查看详情', '取消操作']
+          that.$apply()
+          wepy.showToast({
+            title: '添加成功'
+          })
+        }
+      })
+    }
+    removeCircle() {
+      var that = this
+      wepy.request({
+        url: 'http://192.168.0.106:8080/users/removeCircle',
+        data: {
+          openId: this.$parent.globalData.openId,
+          name: this.circleInfo.name
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          var index = this.globalData.userInfo.circleList.indexOf(that.circleInfo.name)
+          console.log(this.globalData.userInfo.circleList)
+          this.globalData.userInfo.circleList.splice(index, 1)
+          that.hasCircle = false
+          that.itemList = ['加入圈子', '查看详情', '取消操作']
+          that.$apply()
+          console.log(this.globalData.userInfo.circleList)
+          wepy.showToast({
+            title: '删除成功'
+          })
+        }
+      })
+    }
+    methods = {
+      onClick: function(e) {
+        console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
+      },
+      openSheet() {
+        var that = this
+        wepy.showActionSheet({
+          itemList: this.itemList,
+          success (res) {
+            if (res.tapIndex === 2) {
+              console.log('取消操作')
+            }
+            if (that.isManager) {
+              if (res.tapIndex === 0) {
+                console.log('管理圈子')
+              } else if (res.tapIndex === 1) {
+                console.log('管理员查看详情')
+              }
+            } else {
+              if (that.hasCircle) {
+                if (res.tapIndex === 0) {
+                  that.removeCircle()
+                  console.log('退出圈子')
+                } else if (res.tapIndex === 1) {
+                  console.log('圈内人士查看详情')
+                }
+              } else {
+                if (res.tapIndex === 0) {
+                  that.addCircle()
+                  console.log('添加圈子')
+                } else if (res.tapIndex === 1) {
+                  console.log('圈外人士查看详情')
+                }
+              }
+            }
+          },
+          fail (res) {
+            console.log('???')
+            console.log(res.errMsg)
+          }
+        })
+      }
+    }
+    events = {}
+
+    onLoad(p) {
+      console.log('进入圈子：' + p.circleName)
+      this.name = p.circleName
+      let initCircles = new Promise((resolve, reject) => {
+        wepy.request({
+          url: 'http://192.168.0.106:8080/circle/getByName',
+          data: {
+            name: p.circleName
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            console.log(res.data)
+            resolve(res.data)
+          }
+        })
+      })
+      initCircles.then((r) => {
+        this.circleInfo = r
+        if (this.$parent.globalData.userInfo.circleList === null) {
+          this.$parent.globalData.userInfo.circleList = []
+        }
+        if (this.$parent.globalData.userInfo.circleList.indexOf(this.circleInfo.name) !== -1) {
+          this.hasCircle = true
+        }
+        if (this.circleInfo.openId === this.$parent.globalData.userInfo.openId) {
+          this.isManager = true
+          this.itemList = ['管理圈子', '查看详情', '取消操作']
+        } else {
+          if (this.hasCircle) {
+            this.itemList = ['退出圈子', '查看详情', '取消操作']
+          } else {
+            this.itemList = ['加入圈子', '查看详情', '取消操作']
+          }
+        }
+      })
+    }
+  }
+</script>
+
+
+<template>
+  <view class="wrap" >
+    <wxc-flex class="wrap" dir="top">
+      <view class="item side">
+        <view class="user-info"> 
+          <wxc-panel border="{{false}}">
+            <wxc-cc>
+              <view>
+                <image class="user-pic"  @tap="openSheet" src="https://s11.mogucdn.com/p2/170413/upload_86dkh4e886991g9lji7a6g5c530ji_400x400.jpg" mode="aspectFit"></image>
+                <view class="user-name">{{name}}</view>
+              </view>
+            </wxc-cc>
+          </wxc-panel>
+        </view>
+      </view>
+      <view class="item main">
+        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="circle" tab-index="0" label="推荐">
+            <view class="exhibits circle"></view>
+          </wxc-tab-panel>
+          <wxc-tab-panel component-id="circle" tab-index="1" label="最新">
+            <view class="exhibits circle" style="background:#333366;"></view>
+          </wxc-tab-panel>
+        </wxc-tab>
+      </view>
+    </wxc-flex>
+  </view>
+</template>
+
+<style>
+  .wrap {
+    display: block;
+    background: #ffffff;
+  }
+  .item {
+    font-size: 28rpx;
+    line-height: 100%;
+    text-align: center;
+  }
+  .side {
+    width: 100%;
+    height: 350rpx;
+    background: #ffffff;
+    flex-grow: 0;
+  }
+  .main {
+    background: #ffffff;
+    flex-grow: 1;
+  }
+  .anli-item {
+    width: 98%;
+    height: 570rpx;
+    margin: 1%;
+    margin-bottom: 2%;
+    flex-grow: 0;
+    border-radius:3rpx;
+    box-shadow:0 0 7rpx #D7D7D7;
+    background: white;
+  }
+  .user-info {
+    width: 98%;
+    height: 96%;
+    margin: 1%;
+    margin-bottom: 2%;
+  }
+  .avatar {
+    display: inline-block;
+    width: 180rpx;
+    height: 180rpx;
+    margin-top: 20rpx;
+  }
+  .name {
+    margin-top: 10rpx;
+  }
+  .layout {
+    display: block;
+    width: 100%;
+  }
+  .user-pic {
+    width: 200rpx;
+    height: 200rpx;
+    margin: 15rpx;
+    box-shadow: 0 0 5rpx #333333;
+  }
+  .user-name {
+    text-align: center;
+  }
+  .label-list {
+    text-align: center;
+    margin-top: 15rpx;
+  }
+  .label {
+    margin-left: 15rpx;
+  }
+  .tool {
+    width: 90%;
+    background: #ffffff;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+  }
+  .exhibits {
+    color: #ffffff;
+    width: 90%;
+    background: #000000;
+    text-align: left;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .circle {
+    height: 300rpx;
+  }
+  .exhibits:active{
+    box-shadow: 0 0 10rpx #999999;
+  }
+  .exhibits-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #333333;
+  }
+  .question {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    font-size: 32rpx;
+  }
+  .decs {
+    margin-left: 3%;
+    margin-top: 25rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+  }
+  .class-label {
+    margin-top: 17rpx;
+    margin-right: 17rpx;
+  }
+</style>

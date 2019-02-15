@@ -1,239 +1,3 @@
-<style>
-  .wrap {
-    display: block;
-    background: #FFFFFF;
-    font-size: 28rpx;
-  }
-  .item {
-    width: 100%;
-    flex-grow: 0;
-    margin-bottom: 20rpx;
-    border-bottom: #e9eaec;
-    border-top: #e9eaec;
-    border-width: 1rpx 0 1rpx 0;
-    border-style: solid;
-    background: white;
-  }
-  .user-image {
-    width: 80rpx;
-    height: 80rpx;
-    margin-left: 35rpx;
-    margin-top: 20rpx;
-    border-radius:40rpx;
-    box-shadow:0 0 4rpx #bfbfbf;
-  }
-  .user-name {
-    margin-top: 20rpx;
-    margin-left: 15rpx;
-    font-size: 28rpx;
-  }
-  .comment {
-    width: 90%;
-    margin-top: 20rpx;
-    margin-bottom: 5rpx;
-    margin-left: 5%;
-    letter-spacing: 2rpx;
-    line-height: 34rpx;
-    font-weight: 200;
-  }
-  .exhibits {
-    width: 90%;
-    background: #000000;
-    margin-left: 35rpx;
-    margin-top: 10rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
-  }
-  .circle {
-    height: 300rpx;
-  }
-  .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
-  }
-  .exhibits-image {
-    width: 130rpx;
-    height: 180rpx;
-    background: #334433;
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-    margin-bottom: 12rpx;
-    border-radius: 2rpx;
-    box-shadow: 0 0 4rpx #333333;
-  }
-  .normal-font {
-    font-size: 28rpx;
-  }
-  .label {
-    margin-left: 15rpx;
-  }
-  .class-label {
-    margin-top: 20rpx;
-    margin-right: 60rpx;
-    border-radius: 10rpx;
-  }
-  .circle-label {
-    margin-right: 20rpx;
-    border-radius: 10rpx;
-  }
-  .bottom {
-    margin-left: 20rpx;
-    margin-top: 15rpx;
-    margin-bottom: 30rpx;
-  }
-  .button-class {
-    margin-top: 10rpx;
-    margin-left: 20rpx;
-  }
-  .anli-button {
-    margin-top: 10rpx;
-    margin-right: 60rpx;
-  }
-  .popup__content {
-    width: 100%;
-    height: 300rpx;
-    line-height: 500rpx;
-    background: #ffffff;
-  }
-  .popup-button {
-    text-align: center;
-  }
-  .popup-button:active {
-    background: #ECECEC;
-  }
-  .tool {
-    width: 100%;
-    background: #ffffff;
-    margin-bottom: : 20rpx;
-  }
-  .tool-label {
-    margin-left: 20rpx;
-    margin-bottom: 10rpx;
-  }
-  .search-label {
-    margin-left: 35rpx;
-  }
-</style>
-
-
-<template>
-  <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="homepage" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-    <wxc-tab-panel component-id="homepage" tab-index="0" label="推荐">
-      <view class="tool">
-        <wxc-flex dir="left">
-          <wxc-button class="tool-label" size="small" plain="{{true}}" type="secondary" value="筛选"></wxc-button>
-        </wxc-flex>
-      </view>
-      <wxc-flex wx:for="{{items}}" wx:for-item="item" wx:key="{{item.item_id}}" item-index="{{index}}" label="{{item.title}}"  class="wrap" cross="top" wrap="wrap">
-        <view class="item">
-          <view>
-            <wxc-flex class="wrap" main="between">
-              <wxc-flex class="wrap" dir="left">
-                <image class="user-image" src="{{item.user_image}}" @tap="userinfo({{item.user_id}},{{item.user_name}},{{item.user_image}})"></image>
-                <wxc-flex dir="top">
-                  <text class="user-name">{{item.user_name}}</text>
-                  <wxc-flex dir="left">
-                    <wxc-label class="label" wx:for="{{item.labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" type-color="{{label.color}}" @tap="classRecommend({{label.title}})">{{label.title}}</wxc-label>
-                  </wxc-flex>
-                </wxc-flex>
-              </wxc-flex>
-              <wxc-label class="class-label" type="fill" type-color="#747bb1" @tap="classRecommend({{item.label_class}})">{{item.label_class}}安利</wxc-label>
-            </wxc-flex>
-            <view class="comment normal-font ">
-              <wxc-elip  line="2">{{item.comment}}</wxc-elip>
-            </view>
-            <view class="exhibits" style="background:{{item.background}}" @tap="recommend({{item.item_id}},{{item.exhibits_image}})">
-              <image class="exhibits-image" src="{{item.exhibits_image}}"></image>
-            </view>
-          </view>
-          <view class="bottom">
-            <wxc-flex main="between">
-              <wxc-flex dir="left">
-                <wxc-button class="button-class" plain="true" type="secondary" btnStyle="min-width: 66rpx;padding: 0;border-radius: 66rpx">
-                  <wxc-icon color="#666666" size="36" type="comment"></wxc-icon>
-                </wxc-button>
-                <wxc-button bindtap="showPopup" class="button-class" plain="true" type="secondary" btnStyle="min-width: 66rpx;padding: 0;border-radius: 66rpx">
-                  <wxc-icon color="#666666" size="36" type="more"></wxc-icon>
-                </wxc-button>
-                <view catchtouchmove="preventD" >
-                  <wxc-popup class="J_Popup" animation-mode="bottom" align="bottom">
-                    <view class="popup__content">
-                      <wxc-list @tap="seen({{item.item_id}})" class="popup-button" arrow="{{false}}" title="看过"></wxc-list>
-                      <wxc-list @tap="dislike({{item.item_id}})" class="popup-button" arrow="{{false}}" title="不喜欢"></wxc-list>
-                      <wxc-list @tap="report({{item.item_id}})" class="popup-button" arrow="{{false}}" title="举报"></wxc-list>
-                    </view>
-                  </wxc-popup>
-                </view>
-              </wxc-flex>
-              <wxc-button class="anli-button" plain="true" type="secondary" btnStyle="width: 90rpx;padding: 0;border-radius:33rpx" @tap="accept({{item.item_id}})">吃你安利</wxc-button>
-            </wxc-flex>
-          </view>
-        </view>
-      </wxc-flex>
-    </wxc-tab-panel>
-    <wxc-tab-panel component-id="homepage" tab-index="1" label="广场">
-      <wxc-flex wx:for="{{items_gc}}" wx:for-item="item" wx:key="{{item.item_id}}" item-index="{{index}}" label="{{item.title}}"  class="wrap" cross="top" wrap="wrap">
-        <view class="item">
-          <view>
-            <wxc-flex class="wrap" main="between">
-              <wxc-flex class="wrap" dir="left">
-                <image class="user-image" src="{{item.user_image}}" @tap="userinfo({{item.user_id}},{{item.user_name}},{{item.user_image}})"></image>
-                <wxc-flex dir="top">
-                  <text class="user-name">{{item.user_name}}</text>
-                  <wxc-flex class="wrap" dir="left">
-                    <wxc-label class="label" wx:for="{{item.labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" type-color="{{label.color}}" @tap="classRecommend({{label.title}})">{{label.title}}</wxc-label>
-                  </wxc-flex>
-                </wxc-flex>
-              </wxc-flex>
-              <wxc-label class="class-label" type="fill" type-color="#747bb1" @tap="classRecommend({{item.label_class}})">{{item.label_class}}安利</wxc-label>
-            </wxc-flex>
-            <view class="comment normal-font ">
-              <wxc-elip  line="2">{{item.comment}}</wxc-elip>
-            </view>
-            <view class="exhibits" style="background:{{item.background}}" @tap="recommend({{item.item_id}},{{item.exhibits_image}})">
-              <image class="exhibits-image" src="{{item.exhibits_image}}"></image>
-            </view>
-          </view>
-          <view class="bottom">
-            <wxc-flex main="between">
-              <wxc-flex dir="left">
-                <wxc-button class="button-class" plain="true" type="secondary" btnStyle="min-width: 66rpx;padding: 0;border-radius: 66rpx">
-                  <wxc-icon color="#666666" size="36" type="comment"></wxc-icon>
-                </wxc-button>
-                <wxc-button bindtap="showPopupg" class="button-class" plain="true" type="secondary" btnStyle="min-width: 66rpx;padding: 0;border-radius: 66rpx">
-                  <wxc-icon color="#666666" size="36" type="more"></wxc-icon>
-                </wxc-button>
-                <view catchtouchmove="preventD">
-                  <wxc-popup class="G_Popup" animation-mode="bottom" align="bottom">
-                    <view class="popup__content">
-                      <wxc-list @tap="seen({{item.item_id}})" class="popup-button" arrow="{{false}}" title="看过"></wxc-list>
-                      <wxc-list @tap="dislike({{item.item_id}})" class="popup-button" arrow="{{false}}" title="不喜欢"></wxc-list>
-                      <wxc-list @tap="report({{item.item_id}})" class="popup-button" arrow="{{false}}" title="举报"></wxc-list>
-                    </view>
-                  </wxc-popup>
-                </view>
-              </wxc-flex>
-              <wxc-button class="anli-button" plain="true" type="secondary" btnStyle="width: 90rpx;padding: 0;border-radius:33rpx" @tap="accept({{item.item_id}})">吃你安利</wxc-button>
-            </wxc-flex>
-          </view>
-        </view>
-      </wxc-flex>
-    </wxc-tab-panel>
-    <wxc-tab-panel component-id="homepage" tab-index="2" label="圈子">
-      <view class="tool">
-          <wxc-flex dir="left">
-            <wxc-button class="search-label" size="small" plain="{{true}}" type="secondary" value="查找圈子"></wxc-button>
-          </wxc-flex>
-        </view>
-      <view class="exhibits circle" wx:for="{{circles}}" wx:for-item="circle" wx:key="title" label-index="{{index}}" label="{{circle.title}}" @tap="classRecommend({{circle.title}})">
-        <wxc-flex main="between">
-          <view></view>
-          <wxc-label class="circle-label" type-color="{{circle.color}}">{{circle.title}}</wxc-label>
-        </wxc-flex>
-      </view>
-    </wxc-tab-panel>
-  </wxc-tab>
-</template>
-
 
 <script>
   import wepy from 'wepy'
@@ -261,13 +25,9 @@
     mixins = [testMixin]
 
     data = {
-      circles: [
-        {title: '电影', color: '#ff0077'},
-        {title: '动漫', color: '#747bb1'},
-        {title: '动画', color: '#19be6b'},
-        {title: '漫画', color: '#ff9900'},
-        {title: '画集', color: '#ed3f14'}
-      ],
+      circles: null,
+      inputShowed: false,
+      inputVal: '',
       items: [
         {
           item_id: '1',
@@ -374,39 +134,6 @@
       onClick: function(e) {
         console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
       },
-      showPopup() {
-        let popupComponent = this.$wxpage.selectComponent('.J_Popup')
-        popupComponent && popupComponent.show()
-      },
-      showPopupg() {
-        let popupComponent = this.$wxpage.selectComponent('.G_Popup')
-        popupComponent && popupComponent.show()
-      },
-      hidePopup() {
-        let popupComponent = this.$wxpage.selectComponent('.J_Popup')
-        popupComponent && popupComponent.hide()
-      },
-      seen(id) {
-        wx.showToast({
-          title: '看过id=' + id,
-          icon: 'none',
-          duration: 2000
-        })
-      },
-      dislike(id) {
-        wx.showToast({
-          title: '不喜欢id=' + id,
-          icon: 'none',
-          duration: 2000
-        })
-      },
-      report(id) {
-        wx.showToast({
-          title: '举报id=' + id,
-          icon: 'none',
-          duration: 2000
-        })
-      },
       preventD() {},
       recommend (id, image) {
         this.$navigate({url: 'anli?id=' + id + '&image=' + image})
@@ -415,21 +142,381 @@
         this.$navigate({url: 'userinfo?id=' + id + '&name=' + name + '&image=' + image})
       },
       accept (id) {
-        wx.showToast({
+        wepy.showToast({
           title: '接受安利id=' + id,
           icon: 'success',
           duration: 2000
         })
       },
-      classRecommend (classname) {
-        this.$navigate({url: 'anliByClass?classname=' + classname})
+      toCircle (circleName) {
+        this.$navigate({url: 'circle?circleName=' + circleName})
+      },
+      openSheet() {
+        wepy.showActionSheet({
+          itemList: ['收藏', '不感兴趣', '举报'],
+          success (res) {
+            if (res.tapIndex === 0) {
+              wepy.showToast({
+                title: '收藏'
+              })
+            } else if (res.tapIndex === 1) {
+              wepy.showToast({
+                title: '不感兴趣'
+              })
+            } else if (res.tapIndex === 2) {
+              wepy.showToast({
+                title: '举报'
+              })
+            }
+          },
+          fail (res) {
+            console.log(res.errMsg)
+          }
+        })
+      },
+      showInput () {
+        this.inputShowed = true
+      },
+      hideInput () {
+        this.inputVal = ''
+        this.inputShowed = false
+      },
+      clearInput () {
+        this.inputVal = ''
+      },
+      inputTyping (e) {
+        this.inputVal = e.detail.value
       }
     }
 
     events = {}
 
-    onLoad() {}
+    onLoad() {
+      let initCircles = new Promise((resolve, reject) => {
+        wepy.request({
+          url: 'http://192.168.0.106:8080/circle/getListByOpenId',
+          data: {
+            openId: this.$parent.globalData.openId
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            console.log(res.data)
+            resolve(res.data)
+          }
+        })
+      })
+      initCircles.then((r) => {
+        this.circles = r
+      })
+    }
 
-    onShow() {}
+    onShow() {
+      let initCircles = new Promise((resolve, reject) => {
+        wepy.request({
+          url: 'http://192.168.0.106:8080/circle/getListByOpenId',
+          data: {
+            openId: this.$parent.globalData.openId
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      })
+      initCircles.then((r) => {
+        this.circles = r
+      })
+    }
   }
 </script>
+
+<style>
+  .backcolor {
+    display: block;
+    background: #f9f9f9;
+  }
+  .searchbar-result{
+    margin-top: 0;
+    font-size: 14px;
+  }
+  .searchbar-result:before{
+    display: none;
+  }
+  .weui-cell{
+    padding: 12px 15px 12px 35px;
+  }
+  .wrap {
+    display: block;
+    background: #ffffff;
+    font-size: 28rpx;
+  }
+  .item {
+    width: 100%;
+    flex-grow: 0;
+    margin-bottom: 20rpx;
+    border-bottom: #f9f9f9;
+    border-top: #f9f9f9;
+    border-width: 1rpx 0 1rpx 0;
+    border-style: solid;
+    background: white;
+  }
+  .user-image {
+    width: 80rpx;
+    height: 80rpx;
+    margin-left: 35rpx;
+    margin-top: 20rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
+  }
+  .user-name {
+    margin-top: 20rpx;
+    margin-left: 15rpx;
+    font-size: 28rpx;
+  }
+  .comment {
+    width: 90%;
+    margin-top: 20rpx;
+    margin-bottom: 5rpx;
+    margin-left: 5%;
+    letter-spacing: 2rpx;
+  }
+  .exhibits {
+    width: 90%;
+    background: #000000;
+    margin-left: 35rpx;
+    margin-top: 15rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .circle {
+    height: 300rpx;
+  }
+  .exhibits:active{
+    box-shadow: 0 0 10rpx #999999;
+  }
+  .exhibits-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 12rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #333333;
+  }
+  .normal-font {
+    font-size: 28rpx;
+  }
+  .label {
+    margin-left: 15rpx;
+  }
+  .class-label {
+    margin-top: 35rpx;
+    margin-right: 40rpx;
+  }
+  .circle-label {
+    margin-right: 20rpx;
+    border-radius: 10rpx;
+  }
+  .bottom {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 30rpx;
+  }
+  .button-class {
+    text-align: center;
+  }
+  .anli-button {
+    margin-top: 10rpx;
+    margin-right: 60rpx;
+  }
+  .popup__content {
+    width: 100%;
+    height: 300rpx;
+    line-height: 500rpx;
+    background: #ffffff;
+  }
+  .popup-button {
+    text-align: center;
+  }
+  .popup-button:active {
+    background: #ECECEC;
+  }
+  .tool {
+    width: 100%;
+    background: #ffffff;
+    margin-bottom: : 20rpx;
+  }
+  .tool-label {
+    margin-left: 20rpx;
+    margin-bottom: 10rpx;
+  }
+  .search-label {
+    margin-left: 35rpx;
+  }
+</style>
+
+
+<template>
+  <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="homepage" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+    <view class="backcolor">
+    <wxc-tab-panel component-id="homepage" tab-index="0" label="推荐">
+      <view class="tool">
+        <view class="page__bd">
+            <view class="weui-search-bar">
+                <view class="weui-search-bar__form">
+                    <view class="weui-search-bar__box">
+                        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                        <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                        <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                            <icon type="clear" size="14"></icon>
+                        </view>
+                    </view>
+                    <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                        <icon class="weui-icon-search" type="search" size="14"></icon>
+                        <view class="weui-search-bar__text">搜索</view>
+                    </label>
+                </view>
+                <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+            </view>
+            <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+            </view>
+        </view>
+      </view>
+      <wxc-flex wx:for="{{items}}" wx:for-item="item" wx:key="{{item.item_id}}" item-index="{{index}}" label="{{item.title}}" cross="top" wrap="wrap">
+        <view class="item">
+          <view>
+            <wxc-flex main="between">
+              <wxc-flex dir="left">
+                <image class="user-image" src="{{item.user_image}}" @tap="userinfo({{item.user_id}},{{item.user_name}},{{item.user_image}})"></image>
+                <wxc-flex dir="top">
+                  <text class="user-name">{{item.user_name}}</text>
+                  <wxc-flex dir="left">
+                    <wxc-label class="label" wx:for="{{item.labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" type-color="{{label.color}}" @tap="classRecommend({{label.title}})">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </wxc-flex>
+              </wxc-flex>
+              <view class="class-label">
+                <wxc-button @tap="openSheet" size="small" plain="true" type="beauty" btnStyle="min-width: 50rpx;padding: 0;border-width: 0px;">
+                  <wxc-icon color="#666666" size="30" type="more"></wxc-icon>
+                </wxc-button>
+              </view>
+            </wxc-flex>
+            <view class="comment normal-font ">
+              <wxc-elip  line="2">{{item.comment}}</wxc-elip>
+            </view>
+            <view class="exhibits" style="background:{{item.background}}" @tap="recommend({{item.item_id}},{{item.exhibits_image}})">
+              <image class="exhibits-image" src="{{item.exhibits_image}}"></image>
+            </view>
+          </view>
+          <view class="bottom">             
+            <view class="weui-flex">
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-icon--"></view>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-xiaoxi"></view>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-zan1"></view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </wxc-flex>
+    </wxc-tab-panel>
+    </view>
+    <wxc-tab-panel component-id="homepage" tab-index="1" label="广场">
+      <wxc-flex wx:for="{{items}}" wx:for-item="item" wx:key="{{item.item_id}}" item-index="{{index}}" label="{{item.title}}"  class="wrap" cross="top" wrap="wrap">
+        <view class="item">
+          <view>
+            <wxc-flex class="wrap" main="between">
+              <wxc-flex class="wrap" dir="left">
+                <image class="user-image" src="{{item.user_image}}" @tap="userinfo({{item.user_id}},{{item.user_name}},{{item.user_image}})"></image>
+                <wxc-flex dir="top">
+                  <text class="user-name">{{item.user_name}}</text>
+                  <wxc-flex dir="left">
+                    <wxc-label class="label" wx:for="{{item.labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" type-color="{{label.color}}" @tap="classRecommend({{label.title}})">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </wxc-flex>
+              </wxc-flex>
+              <view class="class-label">
+                <wxc-button @tap="openSheet" size="small" plain="true" type="beauty" btnStyle="min-width: 50rpx;padding: 0;border-width: 0px;">
+                  <wxc-icon color="#666666" size="30" type="more"></wxc-icon>
+                </wxc-button>
+              </view>
+            </wxc-flex>
+            <view class="comment normal-font ">
+              <wxc-elip  line="2">{{item.comment}}</wxc-elip>
+            </view>
+            <view class="exhibits" style="background:{{item.background}}" @tap="recommend({{item.item_id}},{{item.exhibits_image}})">
+              <image class="exhibits-image" src="{{item.exhibits_image}}"></image>
+            </view>
+          </view>
+          <view class="bottom">             
+            <view class="weui-flex">
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-icon--"></view>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-xiaoxi"></view>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-zan1"></view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </wxc-flex>
+    </wxc-tab-panel>
+    <wxc-tab-panel component-id="homepage" tab-index="2" label="圈子">
+      <view class="tool">
+          <wxc-flex dir="left">
+            <wxc-button class="search-label" size="small" plain="{{true}}" type="secondary" value="查找圈子"></wxc-button>
+          </wxc-flex>
+        </view>
+      <view class="exhibits circle" wx:for="{{circles}}" wx:for-item="circle" wx:key="name" label-index="{{index}}" label="{{circle.name}}" @tap="toCircle({{circle.name}})">
+        <wxc-flex main="between">
+          <view></view>
+          <wxc-label class="circle-label" type-color="{{circle.color}}">{{circle.name}}</wxc-label>
+        </wxc-flex>
+      </view>
+    </wxc-tab-panel>
+  </wxc-tab>
+</template>
