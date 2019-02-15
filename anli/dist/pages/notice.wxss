@@ -1,0 +1,44 @@
+
+  .list-wrap {
+    width: 100%;
+    background: #efefef;
+  }
+  .list-item {
+    background: #fff;
+    margin-bottom: 30rpx;
+  }
+  .list-item:last-child {
+    margin: 0;
+  }
+
+  .list-check {
+    display: flex;
+    align-items: center;
+  }
+  .list-check:active {
+    background: #ECECEC;
+  }
+  .check {
+    position: absolute;
+    top: 0;
+    left: -2rpx;
+    width: 100%;
+    height: 100%;
+    line-height: 42rpx;
+  }
+  .list-image {
+    width: 95rpx;
+    height: 95rpx;
+    margin-left: 30rpx;
+  }
+  .radius {
+    border-radius: 20px;
+  }
+  .item {
+    flex: 1;
+  }
+  .list-image {
+    width: 102rpx;
+    height: 102rpx;
+    background: #d8d8d8;
+  }

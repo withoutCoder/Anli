@@ -1,0 +1,158 @@
+
+  <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="homepage" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+    <view class="backcolor">
+    <wxc-tab-panel component-id="homepage" tab-index="0" label="推荐">
+      <view class="tool">
+        <view class="page__bd">
+            <view class="weui-search-bar">
+                <view class="weui-search-bar__form">
+                    <view class="weui-search-bar__box">
+                        <icon class="weui-icon-search_in-box" type="search" size="14"/>
+                        <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping"/>
+                        <view class="weui-icon-clear"  wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                            <icon type="clear" size="14"/>
+                        </view>
+                    </view>
+                    <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                        <icon class="weui-icon-search" type="search" size="14"/>
+                        <view class="weui-search-bar__text">搜索</view>
+                    </label>
+                </view>
+                <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+            </view>
+            <view class="weui-cells searchbar-result"  wx:if="{{inputVal.length > 0}}">
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+                <navigator url="" class="weui-cell" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd">
+                        <view>实时搜索文本</view>
+                    </view>
+                </navigator>
+            </view>
+        </view>
+      </view>
+      <wxc-flex wx:for="{{items}}" wx:for-item="item" wx:key="{{item.item_id}}" item-index="{{index}}" label="{{item.title}}" cross="top" wrap="wrap">
+        <view class="item">
+          <view>
+            <wxc-flex main="between">
+              <wxc-flex dir="left">
+                <image class="user-image" src="{{item.user_image}}" bindtap="userinfo" data-wpyuserinfo-a="{{item.user_id}}" data-wpyuserinfo-b="{{item.user_name}}" data-wpyuserinfo-c="{{item.user_image}}"/>
+                <wxc-flex dir="top">
+                  <text class="user-name">{{item.user_name}}</text>
+                  <wxc-flex dir="left">
+                    <wxc-label class="label" wx:for="{{item.labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" type-color="{{label.color}}" bindtap="classRecommend" data-wpyclassrecommend-a="{{label.title}}">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </wxc-flex>
+              </wxc-flex>
+              <view class="class-label">
+                <wxc-button bindtap="openSheet" size="small" plain="true" type="beauty" btnStyle="min-width: 50rpx;padding: 0;border-width: 0px;">
+                  <wxc-icon color="#666666" size="30" type="more"/>
+                </wxc-button>
+              </view>
+            </wxc-flex>
+            <view class="comment normal-font ">
+              <wxc-elip line="2">{{item.comment}}</wxc-elip>
+            </view>
+            <view class="exhibits" style="background:{{item.background}}" bindtap="recommend" data-wpyrecommend-a="{{item.item_id}}" data-wpyrecommend-b="{{item.exhibits_image}}">
+              <image class="exhibits-image" src="{{item.exhibits_image}}"/>
+            </view>
+          </view>
+          <view class="bottom">             
+            <view class="weui-flex">
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-icon--"/>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-xiaoxi"/>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-zan1"/>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </wxc-flex>
+    </wxc-tab-panel>
+    </view>
+    <wxc-tab-panel component-id="homepage" tab-index="1" label="广场">
+      <wxc-flex wx:for="{{items}}" wx:for-item="item" wx:key="{{item.item_id}}" item-index="{{index}}" label="{{item.title}}" class="wrap" cross="top" wrap="wrap">
+        <view class="item">
+          <view>
+            <wxc-flex class="wrap" main="between">
+              <wxc-flex class="wrap" dir="left">
+                <image class="user-image" src="{{item.user_image}}" bindtap="userinfo" data-wpyuserinfo-a="{{item.user_id}}" data-wpyuserinfo-b="{{item.user_name}}" data-wpyuserinfo-c="{{item.user_image}}"/>
+                <wxc-flex dir="top">
+                  <text class="user-name">{{item.user_name}}</text>
+                  <wxc-flex dir="left">
+                    <wxc-label class="label" wx:for="{{item.labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" type-color="{{label.color}}" bindtap="classRecommend" data-wpyclassrecommend-a="{{label.title}}">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </wxc-flex>
+              </wxc-flex>
+              <view class="class-label">
+                <wxc-button bindtap="openSheet" size="small" plain="true" type="beauty" btnStyle="min-width: 50rpx;padding: 0;border-width: 0px;">
+                  <wxc-icon color="#666666" size="30" type="more"/>
+                </wxc-button>
+              </view>
+            </wxc-flex>
+            <view class="comment normal-font ">
+              <wxc-elip line="2">{{item.comment}}</wxc-elip>
+            </view>
+            <view class="exhibits" style="background:{{item.background}}" bindtap="recommend" data-wpyrecommend-a="{{item.item_id}}" data-wpyrecommend-b="{{item.exhibits_image}}">
+              <image class="exhibits-image" src="{{item.exhibits_image}}"/>
+            </view>
+          </view>
+          <view class="bottom">             
+            <view class="weui-flex">
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-icon--"/>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-xiaoxi"/>
+                </view>
+              </view>
+              <view class="weui-flex__item">
+                <view class="button-class">
+                  <view class="iconfont icon-zan1"/>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </wxc-flex>
+    </wxc-tab-panel>
+    <wxc-tab-panel component-id="homepage" tab-index="2" label="圈子">
+      <view class="tool">
+          <wxc-flex dir="left">
+            <wxc-button class="search-label" size="small" plain="{{true}}" type="secondary" value="查找圈子"/>
+          </wxc-flex>
+        </view>
+      <view class="exhibits circle" wx:for="{{circles}}" wx:for-item="circle" wx:key="name" label-index="{{index}}" label="{{circle.name}}" bindtap="toCircle" data-wpytocircle-a="{{circle.name}}">
+        <wxc-flex main="between">
+          <view/>
+          <wxc-label class="circle-label" type-color="{{circle.color}}">{{circle.name}}</wxc-label>
+        </wxc-flex>
+      </view>
+    </wxc-tab-panel>
+  </wxc-tab>

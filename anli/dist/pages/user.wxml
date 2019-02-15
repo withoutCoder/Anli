@@ -1,0 +1,74 @@
+
+  <view class="wrap">
+    <wxc-flex class="wrap" dir="top">
+      <view class="item side">
+        <view class="user-info"> 
+          <wxc-panel border="{{false}}">
+            <wxc-cc class="layout">
+              <view>
+                <image class="user-pic" src="{{userInfo.avatarUrl}}" mode="aspectFit"/>
+                <view class="user-name">{{userInfo.nickName}}</view>
+                <view class="label-list">
+                  <wxc-flex dir="left">
+                    <wxc-label class="label"  wx:for="{{labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" label="{{label.title}}" type-color="{{label.color}}">{{label.title}}</wxc-label>
+                  </wxc-flex>
+                </view>
+              </view>
+            </wxc-cc>
+          </wxc-panel>
+        </view>
+      </view>
+      <view class="item main">
+        <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="c2" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="c2" tab-index="0" label="安利">
+            <view class="tool">
+              <wxc-flex main="left">
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="筛选"/>
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新安利+"/>
+              </wxc-flex>
+            </view>
+            <view class="exhibits" style="background:{{anli.background}}"  wx:for="{{anlis}}" wx:for-item="anli" wx:key="title" label-index="{{index}}" bindtap="recommend" data-wpyrecommend-a="{{anli.anli_id}}" data-wpyrecommend-b="{{anli.exhibits_image}}">
+              <wxc-flex dir="left">
+                <image class="exhibits-image" src="{{anli.exhibits_image}}"/>
+              </wxc-flex>
+            </view>
+          </wxc-tab-panel>
+          <wxc-tab-panel component-id="c2" tab-index="1" label="卡片">
+            <view class="tool">
+              <wxc-flex main="left">
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新卡片+" bindtap="addNewCard" data-wpyaddnewcard-a=""/>
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新实例+" bindtap="addNewInstance" data-wpyaddnewinstance-a=""/>
+              </wxc-flex>
+            </view>
+            <view class="exhibits" wx:for="{{questions}}" wx:for-item="question" wx:key="question_id" label-index="{{index}}" bindtap="show_instance" style="background:{{question.background}}" data-wpyshow_instance-a="{{question.instanceid}}" data-wpyshow_instance-b="{{question.exhibits_image}}">
+              <wxc-flex dir="top">
+                <wxc-flex main="between">
+                  <view class="question">{{question.question}}</view>
+                  <wxc-label class="class-label" type-color="#ffffff">{{question.class}}</wxc-label>
+                </wxc-flex>
+                <wxc-flex dir="left">
+                    <image class="exhibits-image" src="{{question.exhibits_image}}"/>
+                    <view class="decs">{{question.desc}}</view>
+                  </wxc-flex>
+                
+              </wxc-flex>
+            </view>
+          </wxc-tab-panel>
+          <wxc-tab-panel component-id="c2" tab-index="2" label="圈子">
+            <view class="tool">
+              <wxc-flex dir="left">
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="创建新圈子" bindtap="addNewCircle" data-wpyaddnewcircle-a=""/>
+                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="查找新圈子"/>
+              </wxc-flex>
+            </view>
+            <view class="exhibits circle" wx:for="{{userInfo.circleList}}" wx:for-item="circle" wx:key="name" label-index="{{index}}" label="{{circle}}" bindtap="toCircle" data-wpytocircle-a="{{circle}}">
+              <wxc-flex main="between">
+                <view/>
+                <wxc-label class="class-label" type-color="#ffffff">{{circle}}</wxc-label>
+              </wxc-flex>
+            </view>
+          </wxc-tab-panel>
+        </wxc-tab>
+      </view>
+    </wxc-flex>
+  </view>

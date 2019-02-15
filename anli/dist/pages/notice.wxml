@@ -1,0 +1,18 @@
+
+  <view class="list-wrap">
+    <view class="list-item">
+      <view class="list-check">
+        <image class="list-image radius" mode="aspectFill" src="http://s2.mogucdn.com/new1/v1/bdefaultavatar/04.jpg"/>
+        <wxc-list class="item" title="安利本人" detail="人工智能应答" desc="2013-1-2 13:11" arrow="{{false}}"/>
+      </view>
+      <view class="list-check">
+        <image class="list-image radius" mode="aspectFill" src="http://s2.mogucdn.com/new1/v1/bdefaultavatar/04.jpg"/>
+        <wxc-list class="item" title="小红" detail="你在干撒？" desc="2013-1-2 13:11" arrow="{{false}}"/>
+      </view>
+      <view class="list-check">
+        <image class="list-image radius" mode="aspectFill" src="http://s3.mogucdn.com/mlcdn/1689c6/180330_8gak8gf7809jhfi8i0l90i79bca3g_400x400.jpg"/>
+        <wxc-list class="item" title="小兰" detail="我在上海，你呢？" desc="2013-1-2 12:11" arrow="{{false}}"/>
+      </view>
+    </view>
+
+  </view>

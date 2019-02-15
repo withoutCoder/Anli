@@ -1,0 +1,114 @@
+
+  .wrap {
+    display: block;
+    background: #ffffff;
+  }
+  .item {
+    font-size: 28rpx;
+    line-height: 100%;
+    text-align: center;
+  }
+  .side {
+    width: 100%;
+    height: 350rpx;
+    background: #ffffff;
+    flex-grow: 0;
+  }
+  .main {
+    background: #ffffff;
+    flex-grow: 1;
+  }
+  .anli-item {
+    width: 98%;
+    height: 570rpx;
+    margin: 1%;
+    margin-bottom: 2%;
+    flex-grow: 0;
+    border-radius:3rpx;
+    box-shadow:0 0 7rpx #D7D7D7;
+    background: white;
+  }
+  .user-info {
+    width: 98%;
+    height: 96%;
+    margin: 1%;
+    margin-bottom: 2%;
+  }
+  .avatar {
+    display: inline-block;
+    width: 180rpx;
+    height: 180rpx;
+    margin-top: 20rpx;
+  }
+  .name {
+    margin-top: 10rpx;
+  }
+  .layout {
+    display: block;
+    width: 100%;
+  }
+  .user-pic {
+    width: 200rpx;
+    height: 200rpx;
+    margin: 15rpx;
+    box-shadow: 0 0 5rpx #333333;
+  }
+  .user-name {
+    text-align: center;
+  }
+  .label-list {
+    text-align: center;
+    margin-top: 15rpx;
+  }
+  .label {
+    margin-left: 15rpx;
+  }
+  .tool {
+    width: 90%;
+    background: #ffffff;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+  }
+  .exhibits {
+    color: #ffffff;
+    width: 90%;
+    background: #000000;
+    text-align: left;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .circle {
+    height: 300rpx;
+  }
+  .exhibits:active{
+    box-shadow: 0 0 10rpx #999999;
+  }
+  .exhibits-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #333333;
+  }
+  .question {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    font-size: 32rpx;
+  }
+  .decs {
+    margin-left: 3%;
+    margin-top: 25rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+  }
+  .class-label {
+    margin-top: 17rpx;
+    margin-right: 17rpx;
+  }

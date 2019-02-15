@@ -1,0 +1,13 @@
+
+  <view class="exhibits"  wx:for="{{cards}}" wx:for-item="card" wx:key="cardId" label-index="{{index}}" bindtap="show_instance" data-wpyshow_instance-a="{{card.instanceId}}" data-wpyshow_instance-b="{{card.picturePath}}">
+    <wxc-flex dir="top">
+      <wxc-flex main="between">
+        <view class="question">{{card.question}}</view>
+        <wxc-label class="class-label" type-color="#ffffff">{{card.circleId}}</wxc-label>
+      </wxc-flex>
+      <wxc-flex dir="left">
+        
+      </wxc-flex>
+      
+    </wxc-flex>
+  </view>

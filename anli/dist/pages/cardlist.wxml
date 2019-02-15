@@ -1,0 +1,8 @@
+
+  <view class="container">
+    <view class="input-wrap">
+      <wxc-input type="text" title="收货人" placeholder="名字"/>
+      <wxc-input type="number" title="联系电话" placeholder="请输入手机号"/>
+      <wxc-input type="text" title="详细地址" mode="none" placeholder="请输入详细地址"/>
+    </view>
+  </view>

@@ -1,0 +1,9 @@
+
+  <view  wx:if="{{canIUse}}">
+    <wxc-cc>
+      <button type="primary" size="default" plain="false" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
+        授权登陆
+      </button>
+    </wxc-cc>
+  </view>
+  <view  wx:else>请升级微信版本</view>

@@ -1,0 +1,15 @@
+
+  <view class="container">
+    <form bindsubmit="formSubmit">
+      <wxc-input type="text" title="标题" placeholder=""/>
+      <wxc-input type="text" title="picturePath" placeholder=""/>
+      <wxc-input type="text" title="导演" placeholder=""/>
+      <wxc-input type="text" title="编剧" placeholder=""/>
+      <wxc-input type="text" title="主演" placeholder=""/>
+      <wxc-input type="text" title="上映时间" placeholder=""/>
+      <wxc-input type="text" title="片长" placeholder=""/>
+      <wxc-input type="text" title="类型" placeholder=""/>
+      <wxc-input type="text" title="介绍" placeholder=""/>
+      <button type="primary" size="default" plain="false" bindtap="createInstance" data-wpycreateinstance-a="">提交</button>
+    </form>
+  </view>

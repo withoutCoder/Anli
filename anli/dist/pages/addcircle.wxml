@@ -1,0 +1,34 @@
+
+<form bindsubmit="formSubmit" bindreset="formReset" class="container">
+  <view class="section">
+    <view class="section__title">name</view>
+    <input name="name"/>
+  </view>
+  <view class="section section_gap">
+    <view class="section__title">color</view>
+    <wxc-flex dir="top">
+      <radio-group name="color">
+        <view>
+          <radio value="#495060"/>
+          #495060
+        </view>
+        <view>
+          <radio value="#5cadff"/>
+          #5cadff
+        </view>
+        <view>
+          <radio value="#ffffff"/>
+          #ffffff
+        </view>
+        <view>
+          <radio value="#ed3f14"/>
+          #ed3f14
+        </view>
+      </radio-group>
+    </wxc-flex>
+  </view>
+  <view class="btn-area">
+    <button form-type="submit">Submit</button>
+    <button form-type="reset">Reset</button>
+  </view>
+</form>

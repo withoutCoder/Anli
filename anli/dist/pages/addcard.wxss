@@ -1,0 +1,42 @@
+
+   .exhibits {
+    color: #ffffff;
+    width: 90%;
+    background: #000000;
+    text-align: left;
+    height: 300rpx;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #bfbfbf;
+  }
+  .exhibits:active{
+    box-shadow: 0 0 10rpx #999999;
+  }
+  .exhibits-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #333333;
+  }
+  .question {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    font-size: 32rpx;
+  }
+  .decs {
+    margin-left: 3%;
+    margin-top: 25rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+  }
+  .class-label {
+    margin-top: 17rpx;
+    margin-right: 17rpx;
+  }

@@ -1,0 +1,18 @@
+
+  <view class="wrap">
+    <wxc-flex class="wrap" dir="top">
+      <view class="item side">
+        <image class="instance-image" src="{{image}}"/>
+      </view>
+      <view class="item main">
+        <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="circle" tab-index="0" label="详情">
+            <view class="exhibits circle"/>
+          </wxc-tab-panel>
+          <wxc-tab-panel component-id="circle" tab-index="1" label="评论">
+            <view class="exhibits circle"/>
+          </wxc-tab-panel>
+        </wxc-tab>
+      </view>
+    </wxc-flex>
+  </view>
