@@ -1,17 +1,14 @@
 <script>
 import wepy from 'wepy'
-import testMixin from '../mixins/test'
 
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: 'Anlia',
     usingComponents: {
-      'wxc-list': '../../packages/@minui/wxc-list/dist/index',
-      'wxc-icon': '../../packages/@minui/wxc-icon/dist/index',
       'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
-      'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
       'wxc-label': '../../packages/@minui/wxc-label/dist/index',
       'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
+      'wxc-elip': '../../packages/@minui/wxc-elip/dist/index',
       'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
       'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
       'wxc-tab': '../../packages/@minui/wxc-tab/dist/index',
@@ -19,12 +16,14 @@ export default class Index extends wepy.page {
     }
   }
   components = {}
-
-  mixins = [testMixin]
-
   data = {
     id: '',
-    image: ''
+    image: '',
+    anli: '',
+    instance: null,
+    circle: null,
+    bar_index: 0, // 点进来显示评论还是详情
+    urls: [] // 需要预览的图片http链接列表
   }
 
   computed = {}
@@ -32,18 +31,85 @@ export default class Index extends wepy.page {
   methods = {
     onClick: function(e) {
       console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
-    },
-    show_instance (instanceid, instanceimage) {
-      this.$navigate({url: 'instance?instanceid=' + instanceid + '&instanceimage=' + instanceimage})
     }
   }
   events = {}
 
+  previewImage (e) {
+    wepy.previewImage({
+      current: '', // 当前显示图片的http链接
+      urls: this.urls // 需要预览的图片http链接列表
+    })
+  }
+
+  getAnliInfo() {
+    new Promise((resolve, reject) => {
+      console.log(this.id)
+      wepy.request({
+        url: this.$parent.globalData.serverUrl + 'anli/getAnliById',
+        data: {
+          id: this.id
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          resolve(res.data)
+        }
+      })
+    }).then((result) => {
+      this.anli = result
+      this.$apply()
+      this.init()
+    })
+  }
+
+  init() {
+    if (this.anli.anliType === 1) {
+      new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'circle/getByName',
+          data: {
+            name: this.anli.circleName
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      }).then((r) => {
+        this.circle = r
+        this.$apply()
+      })
+    } else if (this.anli.anliType === 2) {
+      new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'instances/getInstanceById',
+          data: {
+            instanceId: this.anli.instanceId1
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      }).then((result) => {
+        this.instance = result
+        this.$apply()
+      })
+    }
+  }
+
   onLoad(p) {
-    console.log(p.id)
-    console.log(p.image)
     this.id = p.id
     this.image = p.image
+    this.urls.push(this.image)
+    this.bar_index = p.bar_index
+    this.getAnliInfo()
   }
 }
 </script>
@@ -53,15 +119,51 @@ export default class Index extends wepy.page {
   <view class="wrap">
     <wxc-flex class="wrap" dir="top">
       <view class="item side">
-        <image class="instance-image" src="{{image}}"></image>
+        <image class="instance-image" bindtap="previewImage" src="{{image}}" mode="aspectFill"></image>
       </view>
       <view class="item main">
-        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="详情">
-            <view class="exhibits circle"></view>
+        <wxc-tab bind:tabchange="onClick" default-index="{{bar_index}}" component-id="anli" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="anli" tab-index="0" label="详情">
+          <view class="instance-desc">
+            <wxc-flex main="between">
+              <wxc-flex dir="left">
+                <navigator class="user-image-localtion" url="userinfo?id={{item.item_id}}&name={{anli.nickName}}&image={{anli.avatarUrl}}" hover-class="none">
+                  <image class="user-image" src="{{anli.avatarUrl}}"></image>
+                </navigator>
+                <wxc-flex dir="top">
+                  <text class="user-name">{{anli.nickName}}</text>
+                  <wxc-elip line="1" class="signature">个性签名放这个地方其实也行</wxc-elip>
+                </wxc-flex>
+              </wxc-flex>
+              <view class="class-label">
+                <wxc-button catchtap="openSheet" size="small" type="beauty" value="+关注"></wxc-button>
+              </view>
+            </wxc-flex>
+            <wxc-flex dir="top">
+              <text class="title">{{anli.instanceName2}}</text>
+              <text class="signature way" wx:if="{{anli.anliType==2}}">推荐方式：定向推荐</text>
+              <text class="signature way" wx:if="{{anli.anliType==1}}">推荐方式：圈内推荐</text>
+              <text class="signature way" wx:if="{{anli.anliType==0}}">推荐方式：直接推荐</text>
+              <text class="text">{{anli.text}}</text>
+            </wxc-flex>
+          </view>
+          <navigator class="from" url="instance?instanceId={{anli.instanceId1}}&instanceImage={{anli.instanceImage1}}" wx:if="{{anli.anliType==2}}">
+            <wxc-flex dir="left">
+              <image class="from-image" src="{{anli.instanceImage1}}" mode="aspectFill"></image>
+              <wxc-flex dir="top" class="top">
+                <wxc-elip line="1" class="instance-title">{{anli.instanceName1}}</wxc-elip>
+                <wxc-elip line="1" class="instance-text">详情：{{anli.answer}}</wxc-elip>
+              </wxc-flex>
+            </wxc-flex>
+          </navigator>
+          <navigator class="circle" style="background-image: url({{circle.picturePath}});" url="circle?circleName={{anli.circleName}}" hover-class="none" wx:if="{{anli.anliType==1}}">
+            <wxc-flex main="between">
+              <view></view>
+              <wxc-label class="class-label" type-color="#ffffff" text-color="#999999" type="fill">{{anli.circleName}}</wxc-label>
+            </wxc-flex>
+          </navigator>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="评论">
-            <view class="exhibits circle"></view>
+          <wxc-tab-panel component-id="anli" tab-index="1" label="评论">
           </wxc-tab-panel>
         </wxc-tab>
       </view>
@@ -77,85 +179,56 @@ export default class Index extends wepy.page {
   .item {
     font-size: 28rpx;
     line-height: 100%;
-    text-align: center;
   }
   .side {
     width: 100%;
-    height: 350rpx;
     background: #ffffff;
-    flex-grow: 0;
+    text-align: center;
   }
   .main {
     background: #ffffff;
     flex-grow: 1;
   }
-  .anli-item {
-    width: 98%;
-    height: 570rpx;
-    margin: 1%;
-    margin-bottom: 2%;
-    flex-grow: 0;
-    border-radius:3rpx;
-    box-shadow:0 0 7rpx #D7D7D7;
-    background: white;
-  }
-  .user-info {
-    width: 98%;
-    height: 96%;
-    margin: 1%;
-    margin-bottom: 2%;
-  }
-  .avatar {
-    display: inline-block;
-    width: 180rpx;
-    height: 180rpx;
-    margin-top: 20rpx;
-  }
-  .name {
-    margin-top: 10rpx;
-  }
-  .layout {
-    display: block;
-    width: 100%;
-  }
-  .user-pic {
+  .from-image {
     width: 130rpx;
     height: 180rpx;
-    margin: 15rpx;
-    box-shadow: 0 0 5rpx #333333;
+    background: #334433;
+    margin-left: 30rpx;
+    margin-bottom: 30rpx;
+    margin-top: 30rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #666666;
   }
-  .user-name {
-    text-align: center;
-  }
-  .label-list {
-    text-align: center;
-    margin-top: 15rpx;
-  }
-  .label {
-    margin-left: 15rpx;
-  }
-  .tool {
+  .instance-desc {
+    color: #999999;
     width: 90%;
     background: #ffffff;
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-  }
-  .exhibits {
-    color: #ffffff;
-    width: 90%;
-    background: #666666;
     text-align: left;
     margin-left: 5%;
     margin-top: 20rpx;
     margin-bottom: 35rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
+    border-radius: 20rpx;
+    box-shadow: 0 0 4rpx #B9B9B9;
   }
-  .circle {
-    height: 300rpx;
+  .from{
+    color: #999999;
+    width: 90%;
+    background: #ffffff;
+    text-align: left;
+    margin-left: 5%;
+    margin-bottom: 35rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 4rpx #B9B9B9;
   }
-  .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
+  .circle{
+    width: 90%;
+    background: #f9f9f9;
+    margin-left: 5%;
+    border-radius: 20rpx;
+    box-shadow: 0 0 5rpx #999999;
+    height: 200rpx;
+    margin-bottom: 20rpx;
+    background-size: cover;
   }
   .instance-image {
     width: 158rpx;
@@ -166,20 +239,94 @@ export default class Index extends wepy.page {
     border-radius: 10rpx;
     box-shadow: 0 0 4rpx #333333;
   }
-  .question {
-    margin-left: 20rpx;
-    margin-top: 20rpx;
+  .instance-title {
+    max-width: 100%;
+    margin-left: 30rpx;
+    margin-top: 35rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
     font-size: 32rpx;
   }
-  .decs {
-    margin-left: 3%;
-    margin-top: 25rpx;
+  .instance-text {
+    width: 90%;
+    margin-left: 35rpx;
+    margin-top: 15rpx;
     letter-spacing: 2rpx;
     line-height: 34rpx;
     font-weight: 200;
+    font-size: 22rpx;
+    color: #999999
+  }
+  .title {
+    max-width: 100%;
+    margin-left: 35rpx;
+    margin-top: 25rpx;
+    margin-bottom: 20rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
+    font-size: 32rpx;
+  }
+  .text {
+    width: 90%;
+    margin-left: 5%;
+    margin-bottom: 25rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-size: 28rpx;
+    color: #666666;
+  }
+  .user-image-localtion {
+    margin-left: 20rpx;
+    margin-top: 20rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
+    width: 70rpx;
+    height: 70rpx;
+  }
+  .user-image {
+    width: 70rpx;
+    height: 70rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
+  }
+  .user-name {
+    margin-top: 25rpx;
+    margin-left: 25rpx;
+    font-size: 28rpx;
+    color: #666666;
+  }
+  .signature{
+    width: 400rpx;
+    margin-left: 25rpx;
+    margin-top: 10rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+    font-size: 22rpx;
+    color: #999999;
+  }
+  .way{
+    margin-left: 5%;
+  }
+  .comment {
+    width: 86%;
+    margin-top: 20rpx;
+    margin-bottom: 5rpx;
+    color: #666666;
+    margin-left: 7%;
+    letter-spacing: 2rpx;
+    font-size: 28rpx;
+  }
+  .label {
+    display: inline-block;
+    line-height: 30rpx;
+    padding: 0 0 0 0;
+    margin-left: 15rpx;
   }
   .class-label {
-    margin-top: 17rpx;
-    margin-right: 17rpx;
+    margin-top: 20rpx;
+    margin-right: 20rpx;
   }
 </style>

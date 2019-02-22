@@ -2,10 +2,11 @@
   position: relative;
   padding: 8px 10px;
   display: flex;
+  margin-right: 3%;
+  margin-left: 3%;
+  margin-bottom: 20rpx;
   box-sizing: border-box;
-  background-color: #EFEFF4;
-  border-top: 1rpx solid #D7D6DC;
-  border-bottom: 1rpx solid #D7D6DC;
+  background-color: #ffffff;
 }
 .weui-icon-search {
   margin-right: 8px;
@@ -24,9 +25,8 @@
 .weui-search-bar__form {
   position: relative;
   flex: auto;
-  border-radius: 5px;
-  background: #FFFFFF;
-  border: 1rpx solid #E6E6EA;
+  border-radius: 10px;
+  background: #f9f9f9;
 }
 .weui-search-bar__box {
   position: relative;
@@ -49,21 +49,20 @@
   font-size: 0;
 }
 .weui-search-bar__label {
+  border-radius: 30px;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 2;
-  border-radius: 3px;
-  text-align: center;
   color: #9B9B9B;
-  background: #FFFFFF;
+  background: #f9f9f9;
   line-height: 28px;
 }
 .weui-search-bar__cancel-btn {
   margin-left: 10px;
   line-height: 28px;
-  color: #09BB07;
+  color: #666666;
   white-space: nowrap;
 }

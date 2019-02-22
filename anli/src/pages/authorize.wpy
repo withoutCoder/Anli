@@ -14,9 +14,7 @@
 
 <script>
   import wepy from 'wepy'
-  import testMixin from '../mixins/test'
-
-  export default class Index extends wepy.page {
+  export default class authorize extends wepy.page {
     config = {
       navigationBarTitleText: 'Anlia',
       usingComponents: {
@@ -24,8 +22,6 @@
       }
     }
     components = {}
-
-    mixins = [testMixin]
 
     data = {
       canIUse: wepy.canIUse('button.open-type.getUserInfo'),
@@ -35,12 +31,13 @@
 
     events = {}
 
-    onLoad() {
-      let getopen = new Promise((resolve, reject) => {
+    load() {
+      new Promise((resolve, reject) => {
+        var that = this
         wepy.login({
           success (e) {
             wepy.request({
-              url: 'http://192.168.0.106:8080/users/getOpenId',
+              url: that.$parent.globalData.serverUrl + 'users/getOpenId',
               data: {
                 code: e.code
               },
@@ -56,11 +53,11 @@
             })
           }
         })
-      })
-      getopen.then((r) => {
+      }).then((r) => {
+        var that = this
         console.log('正在获取用户<' + r.data.openid + '>的个人信息')
         wepy.request({
-          url: 'http://192.168.0.106:8080/users/login',
+          url: that.$parent.globalData.serverUrl + 'users/login',
           data: {
             openId: r.data.openid
           },
@@ -69,8 +66,11 @@
           },
           success (result) {
             if (result.data !== '') {
-              console.log('登陆用户昵称:' + result.data.nickName)
-              this.globalData.userInfo = result.data
+              that.$parent.globalData.userInfo = result.data
+              if (typeof (this.globalData.userInfo.circleList) === 'undefined') {
+                that.globalData.userInfo.circleList = []
+              }
+              console.log(result)
               wepy.switchTab({
                 url: 'user'
               })
@@ -80,14 +80,19 @@
       })
     }
 
+    onLoad() {
+      this.load()
+    }
+
     bindGetUserInfo(e) {
-      console.log('bindGetUserInfo')
+      console.log(e.detail.userInfo)
       if (e.detail.userInfo) {
+        var that = this
         console.log('正在授权' + e.detail.userInfo.nickName)
         wepy.request({
-          url: 'http://192.168.0.106:8080/users/signUp',
+          url: that.$parent.globalData.serverUrl + 'users/signUp',
           data: {
-            openId: this.$parent.globalData.openId,
+            openId: that.$parent.globalData.openId,
             nickName: e.detail.userInfo.nickName,
             gender: e.detail.userInfo.gender,
             avatarUrl: e.detail.userInfo.avatarUrl,
@@ -97,9 +102,8 @@
             'content-type': 'application/json'
           },
           success (res) {
-            console.log('status:' + res.statusCode)
-            console.log('nickName:' + e.detail.userInfo.nickName)
-            this.globalData.userInfo = e.detail.userInfo
+            console.log(res)
+            this.globalData.userInfo = res.data
             this.globalData.userInfo.circleList = []
             wepy.switchTab({
               url: 'user'

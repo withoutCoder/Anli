@@ -2,52 +2,51 @@
   <view class="wrap">
     <wxc-flex class="wrap" dir="top">
       <view class="item side">
-        <image class="instance-image" src="{{instanceimage}}"/>
+        <image class="instance-image" bindtap="previewImage" src="{{instance.picturePath}}" mode="aspectFill"/>
       </view>
       <view class="item main">
-        <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="介绍">
-            <view class="exhibits">
+        <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="instance{{this.instanceId}}" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="instance" tab-index="0" label="介绍">
+            <view class="instance-desc">
               <wxc-flex dir="top">
-                <text class="title">蝙蝠侠：黑暗骑士</text>
-                <text class="introduce">(2008)</text>
-                <view class="label-list">
+                <text class="instance-title">{{instance.name}}</text>
+                <view class="instance-label-list">
                   <wxc-flex dir="left">
-                    <wxc-label class="label"  wx:for="{{labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" label="{{label.title}}" type-color="#ffffff" tapbind="classRecommend({{label.title}})">{{label.title}}</wxc-label>
+                    <wxc-label class="instance-label"  wx:for="{{instance.labelList}}" wx:for-item="label" wx:key="title" type-color="#999999">{{label}}</wxc-label>
                   </wxc-flex>
                 </view>
-                <!--<view class="long-dec {{isFold?'hide':'show'}}">-->
-                <view class="introduce s2">
-                  导演：克里斯托弗·诺兰
+                <view  wx:for="{{instance.decs}}" wx:for-item="i" wx:key="title" class="instance-introduce s2">
+                  {{i}}
                 </view>
-                <view class="introduce s2">
-                  编剧: 乔纳森·诺兰 / 克里斯托弗·诺兰 / 大卫·S·高耶
+                <view class="instance-introduce s2">
+                      介绍：当蝙蝠侠顺利抓住逃回香港的刘并转交给高登后，黑道同意雇用小丑杀死蝙蝠侠。此时小丑向全高谭市宣布，只要蝙蝠侠一天不自首，往后每天都会有人死亡。当小丑暗杀了警长罗伯和审判黑帮的法官等公众官员后，布鲁斯决定自首。在他自首前，丹特抢先宣称自己就是蝙蝠侠，希望借此引出小丑。小丑中计现身想杀死丹特，却被高登和蝙蝠侠阻止并被逮捕。
                 </view>
-                <view class="introduce s2">
-                  主演: 克里斯蒂安·贝尔 / 希斯·莱杰 / 艾伦·艾克哈特 / 迈克尔·凯恩 / 玛吉·吉伦哈尔 
-                </view>
-                <view class="introduce s2">
-                  上映日期: 2008-07-14(纽约首映) / 2008-07-18(美国)
-                </view>
-                <view class="introduce s2">
-                  片长: 152分钟 
-                </view>
-                <view class="introduce s2">
-                  类型: 剧情 / 动作 / 科幻 / 惊悚 / 犯罪 
-                </view>
-                <view class="introduce s2">
-                  介绍：当蝙蝠侠顺利抓住逃回香港的刘并转交给高登后，黑道同意雇用小丑杀死蝙蝠侠。此时小丑向全高谭市宣布，只要蝙蝠侠一天不自首，往后每天都会有人死亡。当小丑暗杀了警长罗伯和审判黑帮的法官等公众官员后，布鲁斯决定自首。在他自首前，丹特抢先宣称自己就是蝙蝠侠，希望借此引出小丑。小丑中计现身想杀死丹特，却被高登和蝙蝠侠阻止并被逮捕。蝙蝠侠开始审问小丑，他透露瑞秋和丹特已被带到城市的两端，并放置了两个遥控爆裂物，之间的距离让蝙蝠侠无法同时救他们。蝙蝠侠立即出发去救瑞秋，同时高登和警察去救丹特。但小丑故意将瑞秋与丹特的位置说反，让两人救的对象相反。通过炸弹的掩护，小丑和刘先生顺利逃出警局。蝙蝠侠即时救到丹特，但丹特被火烧掉了左半张脸，被送往医院。高登却没救到瑞秋，让她在爆炸中身亡。丹特因瑞秋的死陷入疯狂。此时小丑来到医院释放了丹特，并说服他必须向警察、黑帮、高登和蝙蝠侠复仇，丹特成为了双面人。
-                </view>
-                <!--<wxc-button class="introduce" type="secondary" value="{{isFold?'展开':'缩起'}}" bindtap="showAll()"></wxc-button>-->
-
               </wxc-flex>
             </view>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="安利">
-            <view class="exhibits circle"/>
+          <wxc-tab-panel component-id="instance" tab-index="1" label="安利">
+            <view class="tool">
+              <wxc-flex main="left">
+                <navigator class="label" url="addanli?instanceId={{instance.id}}&anliType=2">
+                  <wxc-button size="small" plain="{{true}}" type="secondary" value="推荐其他作品"/>
+                </navigator>
+              </wxc-flex>
+            </view>
+            <wxc-flex wx:for="{{anlis}}" wx:for-item="anli" wx:key="{{anli.id}}" cross="top" wrap="wrap">
+              <navigator class="anli-item" url="instance?instanceId={{anli.instanceId2}}&instanceImage={{anli.instanceImage2}}">
+                <wxc-flex dir="top">
+                  <wxc-flex dir="left">
+                    <image class="anli-image" src="{{anli.instanceImage2}}" mode="aspectFill"/>
+                    <wxc-flex dir="top">
+                      <wxc-elip line="1" class="anli-title">{{anli.instanceName2}}</wxc-elip>
+                      <wxc-elip line="1" class="anli-text">详细：</wxc-elip>     
+                    </wxc-flex>
+                  </wxc-flex>
+                </wxc-flex>
+              </navigator>
+            </wxc-flex>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="2" label="评论">
-            <view class="exhibits circle"/>
+          <wxc-tab-panel component-id="instance" tab-index="2" label="评论">
           </wxc-tab-panel>
         </wxc-tab>
       </view>

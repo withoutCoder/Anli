@@ -1,27 +1,82 @@
 
-  <view class="wrap">
-    <wxc-flex class="wrap" dir="top">
-      <view class="item side">
-        <view class="user-info"> 
-          <wxc-panel border="{{false}}">
-            <wxc-cc>
-              <view>
-                <image class="user-pic" bindtap="openSheet" src="https://s11.mogucdn.com/p2/170413/upload_86dkh4e886991g9lji7a6g5c530ji_400x400.jpg" mode="aspectFit"/>
-                <view class="user-name">{{name}}</view>
+  <view class="backcolor">
+    <view class="circle-pic" bindtap="openSheet" style="background-image: url({{circleInfo.picturePath}});">
+      <wxc-flex main="between">
+        <view class="circle-name">{{name}}</view>
+        <wxc-flex dir="right">
+          <wxc-label class="add-anli" type-color="#ffffff" text-color="#999999" type="fill">点击图片操作</wxc-label>
+        </wxc-flex>
+      </wxc-flex>
+    </view>
+    <view class="search-panel">
+      <navigator class="search_content" url="search">
+        <wxc-flex dir="left">
+          <view class="iconfont icon-sousuo" style="font-size: 16px;"/>
+          <view class="search-input">在圈子下搜索实例</view>
+        </wxc-flex>
+      </navigator>
+    </view>
+    <view class="wrap">
+    <navigator  wx:for="{{anlis}}" wx:for-item="anli" wx:key="{{anli.id}}" url="anli?id={{anli.id}}&image={{anli.instanceImage2}}&bar_index=0" hover-class="none">
+      <view class="item">
+        <view>
+          <wxc-flex main="between">
+            <wxc-flex dir="left">
+              <navigator hover-stop-propagation="true" catchtap="onClick" class="user-image-localtion" url="userinfo?id={{item.item_id}}&name={{anli.nickName}}&image={{anli.avatarUrl}}" hover-class="none">
+                <image class="user-image" src="{{anli.avatarUrl}}"/>
+              </navigator>
+              <wxc-flex dir="top">
+                <text class="user-name">{{anli.nickName}}</text>
+                <wxc-flex dir="left">
+                  <navigator class="label" hover-stop-propagation="true" catchtap="onClick" wx:for="{{myCirlces}}" wx:for-item="circle" wx:key="circle" url="circle?circleName={{circle}}" hover-class="none">
+                    <wxc-label type-color="#999999">{{circle}}</wxc-label>
+                  </navigator>
+                </wxc-flex>
+              </wxc-flex>
+            </wxc-flex>
+            <view class="class-label">
+              <wxc-button catchtap="openSheet" size="small" plain="true" type="beauty" btnStyle="min-width: 50rpx;padding: 0;border-width: 0px;">
+                <wxc-icon color="#666666" size="30" type="more"/>
+              </wxc-button>
+            </view>
+          </wxc-flex>
+          <view class="comment">
+            <wxc-elip line="3">{{anli.text}}</wxc-elip>
+          </view>
+          <navigator class="exhibits" hover-stop-propagation="true" catchtap="onClick" url="instance?instanceId={{anli.instanceId2}}" hover-class="none">
+            <wxc-flex dir="left">
+              <image class="exhibits-image" src="{{anli.instanceImage2}}" mode="aspectFill"/>
+              <wxc-flex dir="top" class="top">
+                <wxc-elip line="1" class="title">{{anli.instanceName2}}</wxc-elip>
+                <wxc-elip line="1" class="text">推荐人:{{nickName}}</wxc-elip>
+              </wxc-flex>
+            </wxc-flex>
+          </navigator>
+        </view>
+        <view class="bottom">             
+          <view class="weui-flex">
+            <view class="weui-flex__item">
+              <view class="button-class" catchtap="share" data-wpyshare-a="{{anli.id}}">
+                <view class="iconfont icon-icon--"/>
+                <view class="number">{{anli.shareNum}}</view>
               </view>
-            </wxc-cc>
-          </wxc-panel>
+            </view>
+            <view class="weui-flex__item">
+              <navigator class="button-class" hover-stop-propagation="true" catchtap="onClick" url="anli?id={{anli.id}}&image={{anli.instanceImage2}}&bar_index=1" hover-class="none">
+                <view class="iconfont icon-xiaoxi"/>
+                <view class="number">{{anli.commentNum}}</view>
+              </navigator>
+            </view>
+            <view class="weui-flex__item">
+              <view class="button-class" catchtap="_like" data-wpy_like-a="{{anli.id}}">
+                <view class="iconfont icon-zan1" wx:if="{{!anli.islike}}"/>
+                <view class="iconfont icon-zan" wx:if="{{anli.islike}}"/>
+                <view class="number">{{anli.likeNum}}</view>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
-      <view class="item main">
-        <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="推荐">
-            <view class="exhibits circle"/>
-          </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="最新">
-            <view class="exhibits circle" style="background:#333366;"/>
-          </wxc-tab-panel>
-        </wxc-tab>
-      </view>
-    </wxc-flex>
+    </navigator>
+    </view>
   </view>

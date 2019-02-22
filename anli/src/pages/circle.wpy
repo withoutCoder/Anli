@@ -1,6 +1,5 @@
 <script>
   import wepy from 'wepy'
-  import testMixin from '../mixins/test'
 
   export default class Index extends wepy.page {
     config = {
@@ -20,21 +19,22 @@
     }
     components = {}
 
-    mixins = [testMixin]
-
     data = {
+      userAnliLikeList: [],
       name: '',
       circleInfo: null,
       itemList: null,
       hasCircle: false,
-      isManager: false
+      isManager: false,
+      anlis: null,
+      nickName: ''
     }
 
     computed = {}
     addCircle() {
       var that = this
       wepy.request({
-        url: 'http://192.168.0.106:8080/users/addCircle',
+        url: this.$parent.globalData.serverUrl + 'users/addCircle',
         data: {
           openId: this.$parent.globalData.openId,
           name: this.circleInfo.name
@@ -58,7 +58,7 @@
     removeCircle() {
       var that = this
       wepy.request({
-        url: 'http://192.168.0.106:8080/users/removeCircle',
+        url: this.$parent.globalData.serverUrl + 'users/removeCircle',
         data: {
           openId: this.$parent.globalData.openId,
           name: this.circleInfo.name
@@ -80,9 +80,72 @@
         }
       })
     }
+    like(id) {
+      wepy.request({
+        url: this.$parent.globalData.serverUrl + 'anli/like',
+        data: {
+          openId: this.$parent.globalData.openId,
+          id: id
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          console.log('like success')
+        }
+      })
+    }
+    cancelLike(id) {
+      wepy.request({
+        url: this.$parent.globalData.serverUrl + 'anli/cancelLike',
+        data: {
+          openId: this.$parent.globalData.openId,
+          id: id
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success (res) {
+          console.log('cancel success')
+        }
+      })
+    }
+    getUserLikeList() {
+      new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'users/getAnliLikeList',
+          data: {
+            openId: this.$parent.globalData.openId
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      }).then((userAnliLikeList) => {
+        this.userAnliLikeList = userAnliLikeList
+        this.$apply()
+      })
+    }
     methods = {
-      onClick: function(e) {
+      onClick(e) {
         console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
+      },
+      _like(id) {
+        var index = this.anlis.findIndex(function(anli) {
+          return anli.id === id
+        })
+        if (!this.anlis[index].islike) {
+          this.anlis[index].likeNum = this.anlis[index].likeNum + 1
+          this.like(this.anlis[index].id)
+        } else {
+          this.anlis[index].likeNum = this.anlis[index].likeNum - 1
+          this.cancelLike(this.anlis[index].id)
+        }
+        this.anlis[index].islike = !this.anlis[index].islike
+        this.$apply()
       },
       openSheet() {
         var that = this
@@ -91,48 +154,40 @@
           success (res) {
             if (res.tapIndex === 2) {
               console.log('取消操作')
+            } else if (res.tapIndex === 1) {
+              wepy.navigateTo({
+                url: 'addanli?anliType=1&circleName=' + that.name
+              })
             }
             if (that.isManager) {
               if (res.tapIndex === 0) {
                 console.log('管理圈子')
-              } else if (res.tapIndex === 1) {
-                console.log('管理员查看详情')
               }
             } else {
               if (that.hasCircle) {
                 if (res.tapIndex === 0) {
                   that.removeCircle()
                   console.log('退出圈子')
-                } else if (res.tapIndex === 1) {
-                  console.log('圈内人士查看详情')
                 }
               } else {
                 if (res.tapIndex === 0) {
                   that.addCircle()
                   console.log('添加圈子')
-                } else if (res.tapIndex === 1) {
-                  console.log('圈外人士查看详情')
                 }
               }
             }
-          },
-          fail (res) {
-            console.log('???')
-            console.log(res.errMsg)
           }
         })
       }
     }
     events = {}
 
-    onLoad(p) {
-      console.log('进入圈子：' + p.circleName)
-      this.name = p.circleName
-      let initCircles = new Promise((resolve, reject) => {
+    initCircle() {
+      new Promise((resolve, reject) => {
         wepy.request({
-          url: 'http://192.168.0.106:8080/circle/getByName',
+          url: this.$parent.globalData.serverUrl + 'circle/getByName',
           data: {
-            name: p.circleName
+            name: this.name
           },
           header: {
             'content-type': 'application/json'
@@ -142,9 +197,9 @@
             resolve(res.data)
           }
         })
-      })
-      initCircles.then((r) => {
+      }).then((r) => {
         this.circleInfo = r
+        this.$apply()
         if (this.$parent.globalData.userInfo.circleList === null) {
           this.$parent.globalData.userInfo.circleList = []
         }
@@ -153,161 +208,316 @@
         }
         if (this.circleInfo.openId === this.$parent.globalData.userInfo.openId) {
           this.isManager = true
-          this.itemList = ['管理圈子', '查看详情', '取消操作']
+          this.itemList = ['管理圈子', '添加新安利', '取消操作']
         } else {
           if (this.hasCircle) {
-            this.itemList = ['退出圈子', '查看详情', '取消操作']
+            this.itemList = ['退出圈子', '添加新安利', '取消操作']
           } else {
-            this.itemList = ['加入圈子', '查看详情', '取消操作']
+            this.itemList = ['加入圈子', '添加新安利', '取消操作']
           }
         }
       })
+    }
+
+    getAnlisByCircleName(circleName) {
+      var that = this
+      new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'anli/getAnlisByCircleName',
+          data: {
+            circleName: circleName
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            for (var i in res.data) {
+              if (that.userAnliLikeList.indexOf(res.data[i].id) !== -1) {
+                res.data[i].islike = true
+              } else {
+                res.data[i].islike = false
+              }
+            }
+            resolve(res.data)
+          }
+        })
+      }).then((r) => {
+        this.anlis = r
+        this.$apply()
+      })
+    }
+
+    onLoad(p) {
+      console.log('进入圈子：' + p.circleName)
+      this.name = p.circleName
+      this.nickName = this.$parent.globalData.userInfo.nickName
+      this.initCircle()
+    }
+
+    onShow() {
+      this.getUserLikeList()
+      this.getAnlisByCircleName(this.name)
     }
   }
 </script>
 
 
 <template>
-  <view class="wrap" >
-    <wxc-flex class="wrap" dir="top">
-      <view class="item side">
-        <view class="user-info"> 
-          <wxc-panel border="{{false}}">
-            <wxc-cc>
-              <view>
-                <image class="user-pic"  @tap="openSheet" src="https://s11.mogucdn.com/p2/170413/upload_86dkh4e886991g9lji7a6g5c530ji_400x400.jpg" mode="aspectFit"></image>
-                <view class="user-name">{{name}}</view>
+  <view class="backcolor">
+    <view class="circle-pic" bindtap="openSheet" style="background-image: url({{circleInfo.picturePath}});">
+      <wxc-flex main="between">
+        <view class="circle-name">{{name}}</view>
+        <wxc-flex dir="right">
+          <wxc-label class="add-anli"  type-color="#ffffff" text-color="#999999" type="fill">点击图片操作</wxc-label>
+        </wxc-flex>
+      </wxc-flex>
+    </view>
+    <view class="search-panel">
+      <navigator class="search_content" url="search">
+        <wxc-flex dir="left">
+          <view class="iconfont icon-sousuo" style="font-size: 16px;"></view>
+          <view class="search-input">在圈子下搜索实例</view>
+        </wxc-flex>
+      </navigator>
+    </view>
+    <view class="wrap">
+    <navigator wx:for="{{anlis}}" wx:for-item="anli" wx:key="{{anli.id}}" url="anli?id={{anli.id}}&image={{anli.instanceImage2}}&bar_index=0" hover-class="none">
+      <view class="item">
+        <view>
+          <wxc-flex main="between">
+            <wxc-flex dir="left">
+              <navigator hover-stop-propagation="true" catchtap="onClick" class="user-image-localtion" url="userinfo?id={{item.item_id}}&name={{anli.nickName}}&image={{anli.avatarUrl}}" hover-class="none">
+                <image class="user-image" src="{{anli.avatarUrl}}"></image>
+              </navigator>
+              <wxc-flex dir="top">
+                <text class="user-name">{{anli.nickName}}</text>
+                <wxc-flex dir="left">
+                  <navigator class="label" hover-stop-propagation="true" catchtap="onClick" wx:for="{{myCirlces}}" wx:for-item="circle" wx:key="circle" url="circle?circleName={{circle}}" hover-class="none">
+                    <wxc-label type-color="#999999">{{circle}}</wxc-label>
+                  </navigator>
+                </wxc-flex>
+              </wxc-flex>
+            </wxc-flex>
+            <view class="class-label">
+              <wxc-button catchtap="openSheet" size="small" plain="true" type="beauty" btnStyle="min-width: 50rpx;padding: 0;border-width: 0px;">
+                <wxc-icon color="#666666" size="30" type="more"></wxc-icon>
+              </wxc-button>
+            </view>
+          </wxc-flex>
+          <view class="comment">
+            <wxc-elip  line="3">{{anli.text}}</wxc-elip>
+          </view>
+          <navigator class="exhibits" hover-stop-propagation="true" catchtap="onClick" url="instance?instanceId={{anli.instanceId2}}" hover-class="none">
+            <wxc-flex dir="left">
+              <image class="exhibits-image" src="{{anli.instanceImage2}}" mode="aspectFill"></image>
+              <wxc-flex dir="top" class="top">
+                <wxc-elip line="1" class="title">{{anli.instanceName2}}</wxc-elip>
+                <wxc-elip line="1" class="text">推荐人:{{nickName}}</wxc-elip>
+              </wxc-flex>
+            </wxc-flex>
+          </navigator>
+        </view>
+        <view class="bottom">             
+          <view class="weui-flex">
+            <view class="weui-flex__item">
+              <view class="button-class" catchtap="share({{anli.id}})">
+                <view class="iconfont icon-icon--"></view>
+                <view class="number">{{anli.shareNum}}</view>
               </view>
-            </wxc-cc>
-          </wxc-panel>
+            </view>
+            <view class="weui-flex__item">
+              <navigator class="button-class" hover-stop-propagation="true" catchtap="onClick" url="anli?id={{anli.id}}&image={{anli.instanceImage2}}&bar_index=1" hover-class="none">
+                <view class="iconfont icon-xiaoxi"></view>
+                <view class="number">{{anli.commentNum}}</view>
+              </navigator>
+            </view>
+            <view class="weui-flex__item">
+              <view class="button-class" catchtap="_like({{anli.id}})">
+                <view class="iconfont icon-zan1" wx:if="{{!anli.islike}}"></view>
+                <view class="iconfont icon-zan" wx:if="{{anli.islike}}"></view>
+                <view class="number">{{anli.likeNum}}</view>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
-      <view class="item main">
-        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="推荐">
-            <view class="exhibits circle"></view>
-          </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="最新">
-            <view class="exhibits circle" style="background:#333366;"></view>
-          </wxc-tab-panel>
-        </wxc-tab>
-      </view>
-    </wxc-flex>
+    </navigator>
+    </view>
   </view>
 </template>
 
 <style>
+  .backcolor {
+    display: block;
+    background: #ffffff;
+  }
   .wrap {
     display: block;
-    background: #ffffff;
+    background: #f9f9f9;
+    font-size: 28rpx;
   }
   .item {
-    font-size: 28rpx;
-    line-height: 100%;
-    text-align: center;
-  }
-  .side {
     width: 100%;
-    height: 350rpx;
-    background: #ffffff;
     flex-grow: 0;
-  }
-  .main {
-    background: #ffffff;
-    flex-grow: 1;
-  }
-  .anli-item {
-    width: 98%;
-    height: 570rpx;
-    margin: 1%;
-    margin-bottom: 2%;
-    flex-grow: 0;
-    border-radius:3rpx;
-    box-shadow:0 0 7rpx #D7D7D7;
+    margin-bottom: 20rpx;
+    border-bottom: #f9f9f9;
+    border-top: #f9f9f9;
+    border-width: 1rpx 0 1rpx 0;
+    border-style: solid;
     background: white;
   }
-  .user-info {
-    width: 98%;
-    height: 96%;
-    margin: 1%;
-    margin-bottom: 2%;
-  }
-  .avatar {
-    display: inline-block;
-    width: 180rpx;
-    height: 180rpx;
+  .user-image-localtion {
+    margin-left: 35rpx;
     margin-top: 20rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
+    width: 80rpx;
+    height: 80rpx;
   }
-  .name {
-    margin-top: 10rpx;
-  }
-  .layout {
-    display: block;
-    width: 100%;
-  }
-  .user-pic {
-    width: 200rpx;
-    height: 200rpx;
-    margin: 15rpx;
-    box-shadow: 0 0 5rpx #333333;
+  .user-image {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
   }
   .user-name {
-    text-align: center;
-  }
-  .label-list {
-    text-align: center;
-    margin-top: 15rpx;
-  }
-  .label {
-    margin-left: 15rpx;
-  }
-  .tool {
-    width: 90%;
-    background: #ffffff;
-    margin-left: 20rpx;
     margin-top: 20rpx;
+    margin-left: 20rpx;
+    font-size: 28rpx;
+  }
+  .comment {
+    width: 86%;
+    margin-top: 20rpx;
+    margin-bottom: 5rpx;
+    color: #666666;
+    margin-left: 7%;
+    letter-spacing: 2rpx;
+    font-size: 28rpx;
   }
   .exhibits {
-    color: #ffffff;
     width: 90%;
-    background: #000000;
-    text-align: left;
+    background: #f9f9f9;
     margin-left: 5%;
     margin-top: 20rpx;
-    margin-bottom: 20rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #efefef;
   }
   .circle {
+    width: 90%;
+    background: #f9f9f9;
+    margin-left: 5%;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #f9f9f9;
     height: 300rpx;
+    margin-bottom: 20rpx;
   }
   .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
+    box-shadow: 0 0 4rpx #999999;
   }
   .exhibits-image {
     width: 130rpx;
     height: 180rpx;
     background: #334433;
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-    margin-bottom: 20rpx;
-    border-radius: 2rpx;
-    box-shadow: 0 0 4rpx #333333;
+    margin-left: 30rpx;
+    margin-top: 30rpx;
+    margin-bottom: 30rpx;
+    border-radius: 4rpx;
+    box-shadow: 0 0 4rpx #666666;
   }
-  .question {
+  .label {
+    display: inline-block;
+    line-height: 30rpx;
+    padding: 0 0 0 0;
+    margin-left: 15rpx;
+  }
+  .class-label {
+    margin-top: 20rpx;
+    margin-right: 4%;
+  }
+  .circle-label {
+    margin-right: 20rpx;
+    border-radius: 10rpx;
+  }
+  .bottom {
     margin-left: 20rpx;
     margin-top: 20rpx;
+    margin-bottom: 30rpx;
+  }
+  .button-class {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .number {
+    margin-left: 5rpx;
+    margin-top: 20rpx;
+    font-size:20rpx;
+    color: #999999;
+  }
+  .search-panel {
+    width: 100%;
+    background: #ffffff;
+    padding-bottom: 20rpx;
+  }
+  .search_content {
+    width: 86%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 20rpx;
+    background: #f9f9f9;
+    border-radius: 10rpx;
+    padding-left: 20rpx;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    font-size: 24rpx;
+    color: #cacaca;
+  }
+  .search-input {
+    margin-top: 7rpx;
+    margin-left: 7rpx;
+  }
+  .title {
+    max-width: 100%;
+    margin-left: 30rpx;
+    margin-top: 35rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
     font-size: 32rpx;
   }
-  .decs {
-    margin-left: 3%;
-    margin-top: 25rpx;
+  .text {
+    width: 90%;
+    margin-left: 35rpx;
+    margin-top: 15rpx;
     letter-spacing: 2rpx;
     line-height: 34rpx;
     font-weight: 200;
+    font-size: 22rpx;
+    color: #999999;
   }
-  .class-label {
-    margin-top: 17rpx;
-    margin-right: 17rpx;
+  .top {
+    width: 500rpx;
+  }
+  .circle-pic{
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 200rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #999999;
+    background-size: cover;
+  }
+  .circle-name{
+    color: #ffffff;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: 7%;
+    font-size: 48rpx;
+  }
+  .add-anli{
+    margin-top: 140rpx;
+    margin-right: 20rpx;
   }
 </style>

@@ -2,15 +2,51 @@
   <view class="wrap">
     <wxc-flex class="wrap" dir="top">
       <view class="item side">
-        <image class="instance-image" src="{{image}}"/>
+        <image class="instance-image" bindtap="previewImage" src="{{image}}" mode="aspectFill"/>
       </view>
       <view class="item main">
-        <wxc-tab  bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="详情">
-            <view class="exhibits circle"/>
+        <wxc-tab  bind:tabchange="onClick" default-index="{{bar_index}}" component-id="anli" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="anli" tab-index="0" label="详情">
+          <view class="instance-desc">
+            <wxc-flex main="between">
+              <wxc-flex dir="left">
+                <navigator class="user-image-localtion" url="userinfo?id={{item.item_id}}&name={{anli.nickName}}&image={{anli.avatarUrl}}" hover-class="none">
+                  <image class="user-image" src="{{anli.avatarUrl}}"/>
+                </navigator>
+                <wxc-flex dir="top">
+                  <text class="user-name">{{anli.nickName}}</text>
+                  <wxc-elip line="1" class="signature">个性签名放这个地方其实也行</wxc-elip>
+                </wxc-flex>
+              </wxc-flex>
+              <view class="class-label">
+                <wxc-button catchtap="openSheet" size="small" type="beauty" value="+关注"/>
+              </view>
+            </wxc-flex>
+            <wxc-flex dir="top">
+              <text class="title">{{anli.instanceName2}}</text>
+              <text class="signature way"  wx:if="{{anli.anliType==2}}">推荐方式：定向推荐</text>
+              <text class="signature way"  wx:if="{{anli.anliType==1}}">推荐方式：圈内推荐</text>
+              <text class="signature way" wx:if="{{anli.anliType==0}}">推荐方式：直接推荐</text>
+              <text class="text">{{anli.text}}</text>
+            </wxc-flex>
+          </view>
+          <navigator class="from" url="instance?instanceId={{anli.instanceId1}}&instanceImage={{anli.instanceImage1}}" wx:if="{{anli.anliType==2}}">
+            <wxc-flex dir="left">
+              <image class="from-image" src="{{anli.instanceImage1}}" mode="aspectFill"/>
+              <wxc-flex dir="top" class="top">
+                <wxc-elip line="1" class="instance-title">{{anli.instanceName1}}</wxc-elip>
+                <wxc-elip line="1" class="instance-text">详情：{{anli.answer}}</wxc-elip>
+              </wxc-flex>
+            </wxc-flex>
+          </navigator>
+          <navigator class="circle" style="background-image: url({{circle.picturePath}});" url="circle?circleName={{anli.circleName}}" hover-class="none" wx:if="{{anli.anliType==1}}">
+            <wxc-flex main="between">
+              <view/>
+              <wxc-label class="class-label" type-color="#ffffff" text-color="#999999" type="fill">{{anli.circleName}}</wxc-label>
+            </wxc-flex>
+          </navigator>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="评论">
-            <view class="exhibits circle"/>
+          <wxc-tab-panel component-id="anli" tab-index="1" label="评论">
           </wxc-tab-panel>
         </wxc-tab>
       </view>

@@ -8,9 +8,9 @@
   word-break: break-all;
 }
 .weui-input {
-  height: 2.58823529em;
-  min-height: 2.58823529em;
-  line-height: 2.58823529em;
+  height: 1.57142857em;
+  min-height: 1.57142857em;
+  line-height: 1.57142857em;
 }
 .weui-toptips {
   position: fixed;

@@ -1,9 +1,9 @@
 .weui-cells {
   position: relative;
-  margin-top: 1.17647059em;
+  margin-top: 0.71428571em;
   background-color: #FFFFFF;
-  line-height: 1.41176471;
-  font-size: 17px;
+  line-height: 0.85714286;
+  font-size: 28rpx;
 }
 .weui-cells:before {
   content: " ";
@@ -70,6 +70,7 @@
   align-items: flex-start;
 }
 .weui-cell__bd {
+  padding: 20rpx;
   flex: 1;
 }
 .weui-cell__ft {

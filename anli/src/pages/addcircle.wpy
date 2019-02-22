@@ -1,46 +1,46 @@
 <template>
-<form bindsubmit="formSubmit" bindreset="formReset" class="container">
-  <view class="section">
-    <view class="section__title">name</view>
-    <input name="name"/>
-  </view>
-  <view class="section section_gap">
-    <view class="section__title">color</view>
-    <wxc-flex dir="top">
-      <radio-group name="color">
-        <view>
-          <radio value="#495060" />
-          #495060
+<view class="page">
+  <form bindsubmit="formSubmit" bindreset="formReset" class="container">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label" style="color:#666666;">圈子名称：</view>
         </view>
-        <view>
-          <radio value="#5cadff" />
-          #5cadff
+        <view class="weui-cell__bd">
+          <input class="weui-input" name="name" style="color:#999999;" placeholder="最多输入六个字符" placeholder-style="color:#efefef" value="{{inputVal}}" maxlength="6"/>
         </view>
-        <view>
-          <radio value="#ffffff" />
-          #ffffff
+      </view>
+    </view>
+    <view class="weui-cells__title" bindtap="chooseImage" style="color:#999999;font-size=28rpx;">点击这里选择圈子图片：</view>
+    <view class="image-select">
+      <wxc-cc>
+        <image class="image-wrap" bindtap="previewImage" id="{{tempFilePaths}}" src="{{tempFilePaths[0]}}" mode="widthFix"></image>
+      </wxc-cc>
+    </view>
+    <view class="weui-cells__title">简介：</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__bd">
+          <wxc-cc>
+            <textarea class="textarea-wrap" name="detail" placeholder="" auto-height="true"/>
+          </wxc-cc>
         </view>
-        <view>
-          <radio value="#ed3f14" />
-          #ed3f14
-        </view>
-      </radio-group>
-    </wxc-flex>
-  </view>
-  <view class="btn-area">
-    <button form-type="submit">Submit</button>
-    <button form-type="reset">Reset</button>
-  </view>
-</form>
+      </view>
+    </view>
+
+    <view class="weui-btn-area">
+      <button form-type="submit" class="weui-btn" type="primary">确定</button>
+    </view>
+  </form>
+</view>
 </template>
 
 <script>
 import wepy from 'wepy'
-import testMixin from '../mixins/test'
 
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '添加新卡片',
+    navigationBarTitleText: '创建圈子',
     usingComponents: {
       'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
       'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
@@ -51,63 +51,116 @@ export default class Index extends wepy.page {
 
   components = {}
 
-  mixins = [testMixin]
+  data = {
+    tempFilePaths: [],
+    inputVal: ''
+  }
 
-  data = {}
+  methods = {}
 
-  addCircle(name) {
-    var that = this
-    wepy.request({
-      url: 'http://192.168.0.106:8080/users/addCircle',
-      data: {
+  formSubmit(e) {
+    console.log(e)
+    wepy.uploadFile({
+      url: this.$parent.globalData.serverUrl + 'circle/insert', // 仅为示例，非真实的接口地址
+      filePath: this.tempFilePaths[0],
+      name: 'file',
+      formData: {
         openId: this.$parent.globalData.openId,
-        name: name
+        name: e.detail.value.name,
+        attributes: '属性1,属性2,属性3'
       },
-      header: {
-        'content-type': 'application/json'
-      },
-      success (res) {
-        this.globalData.userInfo.circleList.push(name)
+      success(res) {
+        if (res.data === 'success') {
+          console.log('upload success')
+          wepy.navigateBack({
+            delta: 1
+          })
+        } else {
+          wepy.showModal({
+            title: '提示',
+            content: '图片格式不正确',
+            showCancel: false
+          })
+        }
+      }
+    })
+  }
+
+  chooseImage (e) {
+    var that = this
+    wepy.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success(res) {
+        console.log(res)
+        that.tempFilePaths = res.tempFilePaths
         that.$apply()
       }
     })
   }
-  methods = {
-    formSubmit(e) {
-      var that = this
-      wepy.request({
-        url: 'http://192.168.0.106:8080/circle/insert',
-        data: {
-          openId: this.$parent.globalData.openId,
-          name: e.detail.value.name,
-          color: e.detail.value.color,
-          attributes: '属性1,属性2,属性3'
-        },
-        header: {
-          'content-type': 'application/json'
-        },
-        success (res) {
-          that.addCircle(e.detail.value.name)
-          console.log('创建新圈子：', e.detail.value)
-        }
-      })
-    },
-    formReset() {
-      console.log('form发生了reset事件')
-    }
+  previewImage (e) {
+    wepy.previewImage({
+      current: '', // 当前显示图片的http链接
+      urls: this.tempFilePaths // 需要预览的图片http链接列表
+    })
   }
 
-  onLoad() {}
+  onLoad(p) {
+    console.log(this.inputVal)
+    if (typeof (this.inputVal) !== 'undefined') {
+      this.inputVal = p.inputVal
+    }
+  }
 }
 </script>
 
 <style>
+  .page {
+    margin: 30rpx;
+    border-style: solid;
+    border-width: 1rpx;
+    border-color: #efefef;
+  }
+  .wrap {
+    background: #FFFFFF;
+    width: 100%;
+    height: 100%;
+    padding-top: 20rpx;
+  }
   .container {
+    width: 94%;
+    margin-right: 20rpx;
+    margin-left: 20rpx;
+    border-radius: 8rpx;
+    box-shadow: 0 0 4rpx #666666;
+    background: #FFFFFF;
+  }
+  .textarea-wrap{
     width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
+    padding: 20rpx;
+    color: #999999;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 10rpx;
+    background: #f9f9f9;
+  }
+  .submit-button {
+    width: 60%;
+    margin-left: 30%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
   }
   .input-wrap {
-    background: #fff;
+    background: #FFFFFF;
+  }
+  .image-select {
+    min-height: 100rpx;
+    padding-top: 20rpx;
+    text-align: center;
+    padding-bottom: 20rpx;
+  }
+  .image-wrap {
+    width: 240rpx;
   }
 </style>

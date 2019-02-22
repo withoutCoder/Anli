@@ -1,6 +1,5 @@
 <script>
   import wepy from 'wepy'
-  import testMixin from '../mixins/test'
 
   export default class Index extends wepy.page {
     config = {
@@ -12,6 +11,7 @@
         'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
         'wxc-label': '../../packages/@minui/wxc-label/dist/index',
         'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
+        'wxc-elip': '../../packages/@minui/wxc-elip/dist/index',
         'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
         'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
         'wxc-tab': '../../packages/@minui/wxc-tab/dist/index',
@@ -20,19 +20,11 @@
     }
     components = {}
 
-    mixins = [testMixin]
-
     data = {
-      isFold: true,
-      instanceid: '',
-      instanceimage: '',
-      labels: [
-        {title: '电影', color: '#ff0077'},
-        {title: 'dc', color: '#747bb1'},
-        {title: '漫改', color: '#19be6b'},
-        {title: '蝙蝠侠', color: '#ff9900'},
-        {title: '超级英雄', color: '#ed3f14'}
-      ]
+      instance: null,
+      instanceId: null,
+      anlis: null,
+      urls: []
     }
 
     computed = {}
@@ -43,20 +35,90 @@
       },
       classRecommend (classname) {
         this.$navigate({url: 'anliByClass?classname=' + classname})
+      },
+      openSheet() {
+        wepy.showActionSheet({
+          itemList: ['收藏', '举报'],
+          success (res) {
+            if (res.tapIndex === 0) {
+              wepy.showToast({
+                title: '收藏'
+              })
+            } else if (res.tapIndex === 1) {
+              wepy.showToast({
+                title: '举报'
+              })
+            }
+          }
+        })
       }
     }
-    events = {}
 
-    showAll () {
-      this.isFold = !this.isFold
-      console.log(this.data.isFold)
+    getInstance() {
+      new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'instances/getInstanceById',
+          data: {
+            instanceId: this.instanceId
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      }).then((result) => {
+        this.instance = result
+        this.urls.push(this.instance.picturePath)
+        this.$apply()
+        console.log(this.instance)
+      })
+    }
+    getAnliByInstanceId() {
+      new Promise((resolve, reject) => {
+        var that = this
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'anli/getAnliByInstanceId',
+          data: {
+            instanceId: this.instanceId
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            var a = res.data
+            for (var i in a) {
+              if (a[i].instanceId2 === that.instanceId) {
+                a[i].instanceId2 = a[i].instanceId1
+                a[i].instanceImage2 = a[i].instanceImage1
+                a[i].instanceName2 = a[i].instanceName1
+              }
+            }
+            resolve(a)
+          }
+        })
+      }).then((result) => {
+        this.anlis = result
+        this.$apply()
+      })
+    }
+    previewImage (e) {
+      wepy.previewImage({
+        current: '', // 当前显示图片的http链接
+        urls: this.urls // 需要预览的图片http链接列表
+      })
     }
 
+    events = {}
+
     onLoad(p) {
-      console.log(p.instanceid)
-      console.log(p.instanceimage)
-      this.instanceid = p.instanceid
-      this.instanceimage = p.instanceimage
+      this.instanceId = p.instanceId
+      this.getInstance()
+    }
+
+    onShow() {
+      this.getAnliByInstanceId()
     }
   }
 </script>
@@ -66,52 +128,51 @@
   <view class="wrap">
     <wxc-flex class="wrap" dir="top">
       <view class="item side">
-        <image class="instance-image" src="{{instanceimage}}"></image>
+        <image class="instance-image" bindtap="previewImage" src="{{instance.picturePath}}" mode="aspectFill"></image>
       </view>
       <view class="item main">
-        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="circle" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="circle" tab-index="0" label="介绍">
-            <view class="exhibits">
+        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="instance{{this.instanceId}}" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="instance" tab-index="0" label="介绍">
+            <view class="instance-desc">
               <wxc-flex dir="top">
-                <text class="title">蝙蝠侠：黑暗骑士</text>
-                <text class="introduce">(2008)</text>
-                <view class="label-list">
+                <text class="instance-title">{{instance.name}}</text>
+                <view class="instance-label-list">
                   <wxc-flex dir="left">
-                    <wxc-label class="label" wx:for="{{labels}}" wx:for-item="label" wx:key="title" label-index="{{index}}" label="{{label.title}}" type-color="#ffffff" tapbind="classRecommend({{label.title}})">{{label.title}}</wxc-label>
+                    <wxc-label class="instance-label" wx:for="{{instance.labelList}}" wx:for-item="label" wx:key="title" type-color="#999999">{{label}}</wxc-label>
                   </wxc-flex>
                 </view>
-                <!--<view class="long-dec {{isFold?'hide':'show'}}">-->
-                <view class="introduce s2">
-                  导演：克里斯托弗·诺兰
+                <view wx:for="{{instance.decs}}" wx:for-item="i" wx:key="title" class="instance-introduce s2">
+                  {{i}}
                 </view>
-                <view class="introduce s2">
-                  编剧: 乔纳森·诺兰 / 克里斯托弗·诺兰 / 大卫·S·高耶
+                <view class="instance-introduce s2">
+                      介绍：当蝙蝠侠顺利抓住逃回香港的刘并转交给高登后，黑道同意雇用小丑杀死蝙蝠侠。此时小丑向全高谭市宣布，只要蝙蝠侠一天不自首，往后每天都会有人死亡。当小丑暗杀了警长罗伯和审判黑帮的法官等公众官员后，布鲁斯决定自首。在他自首前，丹特抢先宣称自己就是蝙蝠侠，希望借此引出小丑。小丑中计现身想杀死丹特，却被高登和蝙蝠侠阻止并被逮捕。
                 </view>
-                <view class="introduce s2">
-                  主演: 克里斯蒂安·贝尔 / 希斯·莱杰 / 艾伦·艾克哈特 / 迈克尔·凯恩 / 玛吉·吉伦哈尔 
-                </view>
-                <view class="introduce s2">
-                  上映日期: 2008-07-14(纽约首映) / 2008-07-18(美国)
-                </view>
-                <view class="introduce s2">
-                  片长: 152分钟 
-                </view>
-                <view class="introduce s2">
-                  类型: 剧情 / 动作 / 科幻 / 惊悚 / 犯罪 
-                </view>
-                <view class="introduce s2">
-                  介绍：当蝙蝠侠顺利抓住逃回香港的刘并转交给高登后，黑道同意雇用小丑杀死蝙蝠侠。此时小丑向全高谭市宣布，只要蝙蝠侠一天不自首，往后每天都会有人死亡。当小丑暗杀了警长罗伯和审判黑帮的法官等公众官员后，布鲁斯决定自首。在他自首前，丹特抢先宣称自己就是蝙蝠侠，希望借此引出小丑。小丑中计现身想杀死丹特，却被高登和蝙蝠侠阻止并被逮捕。蝙蝠侠开始审问小丑，他透露瑞秋和丹特已被带到城市的两端，并放置了两个遥控爆裂物，之间的距离让蝙蝠侠无法同时救他们。蝙蝠侠立即出发去救瑞秋，同时高登和警察去救丹特。但小丑故意将瑞秋与丹特的位置说反，让两人救的对象相反。通过炸弹的掩护，小丑和刘先生顺利逃出警局。蝙蝠侠即时救到丹特，但丹特被火烧掉了左半张脸，被送往医院。高登却没救到瑞秋，让她在爆炸中身亡。丹特因瑞秋的死陷入疯狂。此时小丑来到医院释放了丹特，并说服他必须向警察、黑帮、高登和蝙蝠侠复仇，丹特成为了双面人。
-                </view>
-                <!--<wxc-button class="introduce" type="secondary" value="{{isFold?'展开':'缩起'}}" @tap="showAll()"></wxc-button>-->
-
               </wxc-flex>
             </view>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="1" label="安利">
-            <view class="exhibits circle"></view>
+          <wxc-tab-panel component-id="instance" tab-index="1" label="安利">
+            <view class="tool">
+              <wxc-flex main="left">
+                <navigator class="label" url="addanli?instanceId={{instance.id}}&anliType=2">
+                  <wxc-button size="small" plain="{{true}}" type="secondary" value="推荐其他作品"></wxc-button>
+                </navigator>
+              </wxc-flex>
+            </view>
+            <wxc-flex wx:for="{{anlis}}" wx:for-item="anli" wx:key="{{anli.id}}" cross="top" wrap="wrap">
+              <navigator class="anli-item" url="instance?instanceId={{anli.instanceId2}}&instanceImage={{anli.instanceImage2}}">
+                <wxc-flex dir="top">
+                  <wxc-flex dir="left">
+                    <image class="anli-image" src="{{anli.instanceImage2}}" mode="aspectFill"></image>
+                    <wxc-flex dir="top">
+                      <wxc-elip line="1" class="anli-title">{{anli.instanceName2}}</wxc-elip>
+                      <wxc-elip line="1" class="anli-text">详细：</wxc-elip>     
+                    </wxc-flex>
+                  </wxc-flex>
+                </wxc-flex>
+              </navigator>
+            </wxc-flex>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="circle" tab-index="2" label="评论">
-            <view class="exhibits circle"></view>
+          <wxc-tab-panel component-id="instance" tab-index="2" label="评论">
           </wxc-tab-panel>
         </wxc-tab>
       </view>
@@ -127,27 +188,63 @@
   .item {
     font-size: 28rpx;
     line-height: 100%;
-    text-align: center;
   }
   .side {
     width: 100%;
     background: #ffffff;
+    text-align: center;
   }
   .main {
     background: #ffffff;
     flex-grow: 1;
   }
   .anli-item {
-    width: 98%;
-    height: 570rpx;
-    margin: 1%;
-    margin-bottom: 2%;
-    flex-grow: 0;
-    border-radius:3rpx;
-    box-shadow:0 0 7rpx #D7D7D7;
-    background: white;
+    color: #666666;
+    width: 90%;
+    background: #ffffff;
+    text-align: left;
+    margin-left: 5%;
+    margin-bottom: 20rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #B9B9B9;
   }
-  .instance-image {
+  .anli-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 30rpx;
+    margin-bottom: 30rpx;
+    margin-top: 30rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #666666;
+  }
+  .anli-title {
+    max-width: 100%;
+    margin-left: 30rpx;
+    margin-top: 35rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
+    font-size: 32rpx;
+  }
+  .anli-text {
+    width: 90%;
+    margin-left: 35rpx;
+    margin-top: 15rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+    font-size: 22rpx;
+    color: #999999;
+  }
+  .anli-top {
+    width: 500rpx;
+  }
+  .anli-bottom {
+    width: 100%;
+    margin-top: 50rpx;
+  }
+  .instance-image{
     width: 158rpx;
     height: 220rpx;
     background: #334433;
@@ -156,84 +253,50 @@
     border-radius: 10rpx;
     box-shadow: 0 0 4rpx #333333;
   }
-  .exhibits {
-    color: #ffffff;
+  .instance-desc {
+    color: #999999;
     width: 90%;
-    background: #666666;
+    background: #ffffff;
     text-align: left;
     margin-left: 5%;
     margin-top: 20rpx;
     margin-bottom: 35rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
+    border-radius: 20rpx;
+    box-shadow: 0 0 4rpx #B9B9B9;
   }
-  .title {
+  .instance-title {
     margin-top: 30rpx;
     margin-left: 35rpx;
     margin-right: 35rpx;
     font-size: 42rpx;
-    color: #ffffff;
+    color: #666666;
   }
-  .long-dec{
-    margin-left: 20rpx;
-    margin-right: 20rpx;
+  .instance-introduce {
     margin-bottom: 20rpx;
-    display: -webkit-box;
-    font-size:22rpx;
-    color:#ffffff;
-    line-height: 40rpx;
-    word-break: break-all;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp:6;
-    overflow: hidden;
-    text-overflow:ellipsis;
-  }
-  .hide{
-    display: -webkit-box;
-  }
-  .show{
-    display: block;
-  }
-  .arrow{
-     position: absolute;
-     width: 40rpx;
-     height: 43rpx;
-     left: 50%;
-     transform: translate(-50%);
-  }
-  .introduce {
-    margin-top: 20rpx;
     margin-left: 35rpx;
     margin-right: 35rpx;
     font-size: 32rpx;
-    color: #ffffff;
+    color: #999999;
   }
   .s2 {
     font-size: 28rpx;
-    margin-bottom: 20rpx;
     letter-spacing: 3rpx;
     line-height: 38rpx;
     font-weight: 200;
   }
-  .layout {
-    display: block;
-    width: 100%;
-  }
-  .user-pic {
-    width: 130rpx;
-    height: 200rpx;
-    margin: 15rpx;
-    box-shadow: 0 0 5rpx #333333;
-  }
-  .user-name {
-    text-align: center;
-  }
-  .label-list {
+  .instance-label-list {
     text-align: center;
     margin-top: 20rpx;
+    margin-bottom: 20rpx;
     margin-left: 20rpx;
   }
+  .instance-label {
+    margin-left: 15rpx;
+  }
   .label {
+    display: inline-block;
+    line-height: 30rpx;
+    padding: 0 0 0 0;
     margin-left: 15rpx;
   }
   .tool {
@@ -241,20 +304,6 @@
     background: #ffffff;
     margin-left: 20rpx;
     margin-top: 20rpx;
-  }
-  .circle {
-    height: 300rpx;
-  }
-  .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
-  }
-  .question {
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-    font-size: 32rpx;
-  }
-  .class-label {
-    margin-top: 17rpx;
-    margin-right: 17rpx;
+    margin-bottom: 20rpx;
   }
 </style>

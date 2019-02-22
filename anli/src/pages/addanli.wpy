@@ -1,0 +1,195 @@
+<style>
+  .searchbar-result{
+    margin-top: 0;
+    font-size: 14px;
+  }
+  .searchbar-result:before{
+    display: none;
+  }
+  .weui-cell{
+    padding: 12px 15px 12px 35px;
+  }
+  .list-wrap {
+    width: 90%;
+    height: 100%;
+    background: #ffffff;
+    padding-bottom: 20rpx;
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+  .list-item {
+    background: #f9f9f9;
+    margin-bottom: 20rpx;
+  }
+  .list-item:last-child {
+    margin: 0;
+  }
+
+  .list-check {
+    display: flex;
+    align-items: center
+  }
+  .list-image {
+    width: 102rpx;
+    height: 102rpx;
+    margin-left: 30rpx;
+  }
+  .item {
+    flex: 1;
+  }
+  .list-image {
+    width: 80rpx;
+    height: 102rpx;
+    background: #d8d8d8;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #666666;
+  }
+  .add-instance {
+    color: #999999;
+    margin-top: 20rpx;
+    margin-bottom: 40rpx;
+    text-align: center;
+    font-size: 28rpx;
+  }
+</style>
+
+<template>
+  <view class="weui-search-bar">
+    <view class="weui-search-bar__form">
+      <view class="weui-search-bar__box">
+        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <input type="text" class="weui-search-bar__input" placeholder="搜索您想要推荐的作品" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+        <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+          <icon type="clear" size="14"></icon>
+        </view>
+      </view>
+    </view>
+    <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+  </view>
+  <view class="list-wrap" wx:if="{{inputVal.length > 0}}">
+    <view class="list-item" wx:for="{{searchData}}" wx:for-item="item" wx:key="id" bindtap="navigateTo({{instanceId}},{{item.id}})">
+      <view class="list-check">
+        <image class="list-image" mode="aspectFill" src="{{item.picturePath}}"></image>
+        <wxc-list class="item" mode="none" title="{{item.name}} [{{item.classId}}]" detail="{{item.labelList}}"></wxc-list>
+      </view>
+    </view>
+    <navigator class="add-instance" url="addInstance?name={{inputVal}}" hover-class="none">
+      没找到？添加一个实例
+    </navigator>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class anli extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Anlia',
+      usingComponents: {
+        'wxc-list': '../../packages/@minui/wxc-list/dist/index',
+        'wxc-icon': '../../packages/@minui/wxc-icon/dist/index'
+      }
+    }
+    data = {
+      anlis: null,
+      instanceId: '',
+      inputShowed: false,
+      inputVal: '',
+      searchData: null,
+      anliType: '',
+      circleName: ''
+    }
+    onLoad(p) {
+      this.anliType = p.anliType
+      if (p.anliType === '2') {
+        this.instanceId = p.instanceId
+      } else if (p.anliType === '1') {
+        this.circleName = p.circleName
+      }
+    }
+    onShow() {
+      if (this.inputVal.length > 0) {
+        this.search()
+      }
+    }
+    methods = {
+      showInput () {
+        this.inputShowed = true
+      },
+      hideInput () {
+        this.inputVal = ''
+        this.inputShowed = false
+      },
+      clearInput () {
+        this.inputVal = ''
+      },
+      navigateTo(instanceId1, instanceId2) {
+        var that = this
+        if (instanceId1 !== instanceId2) {
+          wepy.request({
+            url: this.$parent.globalData.serverUrl + 'anli/exist',
+            data: {
+              openId: this.$parent.globalData.openId,
+              instanceId1: instanceId1,
+              instanceId2: instanceId2,
+              anliType: this.anliType,
+              circleName: this.circleName
+            },
+            header: {
+              'content-type': 'application/json'
+            },
+            success (res) {
+              if (res.data) {
+                wepy.showModal({
+                  title: '提示',
+                  content: '您已经有过该安利了，继续推荐将覆盖之前推荐的评论和点赞，是否继续？',
+                  success(res) {
+                    if (res.confirm) {
+                      wepy.navigateTo({
+                        url: 'addanlipage?anliType=' + that.anliType + '&instanceId1=' + instanceId1 + '&instanceId2=' + instanceId2 + '&circleName=' + that.circleName
+                      })
+                    }
+                  }
+                })
+              } else {
+                wepy.navigateTo({
+                  url: 'addanlipage?anliType=' + that.anliType + '&instanceId1=' + instanceId1 + '&instanceId2=' + instanceId2 + '&circleName=' + that.circleName
+                })
+              }
+            }
+          })
+        } else {
+          wepy.showModal({
+            title: '提示',
+            content: '抱歉，相同作品无法安利',
+            showCancel: false
+          })
+        }
+      }
+    }
+    search() {
+      let search = new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'instances/search',
+          data: {
+            input: this.inputVal
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      })
+      search.then((r) => {
+        this.searchData = r
+        this.$apply()
+      })
+    }
+    inputTyping (e) {
+      this.inputVal = e.detail.value
+      this.search()
+    }
+  }
+</script>

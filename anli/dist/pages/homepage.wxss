@@ -3,16 +3,6 @@
     display: block;
     background: #f9f9f9;
   }
-  .searchbar-result{
-    margin-top: 0;
-    font-size: 14px;
-  }
-  .searchbar-result:before{
-    display: none;
-  }
-  .weui-cell{
-    padding: 12px 15px 12px 35px;
-  }
   .wrap {
     display: block;
     background: #ffffff;
@@ -28,59 +18,91 @@
     border-style: solid;
     background: white;
   }
+  .user-image-localtion {
+    margin-left: 35rpx;
+    margin-top: 20rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
+    width: 80rpx;
+    height: 80rpx;
+  }
   .user-image {
     width: 80rpx;
     height: 80rpx;
-    margin-left: 35rpx;
-    margin-top: 20rpx;
     border-radius:40rpx;
     box-shadow:0 0 4rpx #bfbfbf;
   }
   .user-name {
     margin-top: 20rpx;
-    margin-left: 15rpx;
+    margin-left: 20rpx;
     font-size: 28rpx;
   }
   .comment {
-    width: 90%;
+    width: 86%;
     margin-top: 20rpx;
     margin-bottom: 5rpx;
-    margin-left: 5%;
+    color: #666666;
+    margin-left: 7%;
     letter-spacing: 2rpx;
+    font-size: 28rpx;
   }
   .exhibits {
     width: 90%;
-    background: #000000;
+    background: #f9f9f9;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #efefef;
+  }
+  .text {
+    width: 90%;
     margin-left: 35rpx;
     margin-top: 15rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    font-weight: 200;
+    font-size: 22rpx;
+    color: #999999;
+  }
+  .title {
+    max-width: 100%;
+    margin-left: 30rpx;
+    margin-top: 35rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
+    font-size: 32rpx;
   }
   .circle {
+    width: 90%;
+    background: #f9f9f9;
+    margin-left: 5%;
+    border-radius: 20rpx;
+    box-shadow: 0 0 4rpx #f9f9f9;
     height: 300rpx;
+    margin-bottom: 20rpx;
   }
   .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
+    box-shadow: 0 0 4rpx #999999;
   }
   .exhibits-image {
     width: 130rpx;
     height: 180rpx;
     background: #334433;
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-    margin-bottom: 12rpx;
-    border-radius: 2rpx;
-    box-shadow: 0 0 4rpx #333333;
-  }
-  .normal-font {
-    font-size: 28rpx;
+    margin-left: 30rpx;
+    margin-top: 30rpx;
+    margin-bottom: 30rpx;
+    border-radius: 4rpx;
+    box-shadow: 0 0 4rpx #666666;
   }
   .label {
+    display: inline-block;
+    line-height: 30rpx;
+    padding: 0 0 0 0;
     margin-left: 15rpx;
   }
   .class-label {
-    margin-top: 35rpx;
-    margin-right: 40rpx;
+    margin-right: 4%;
   }
   .circle-label {
     margin-right: 20rpx;
@@ -92,33 +114,48 @@
     margin-bottom: 30rpx;
   }
   .button-class {
-    text-align: center;
-  }
-  .anli-button {
-    margin-top: 10rpx;
-    margin-right: 60rpx;
-  }
-  .popup__content {
+    display: flex;
+    justify-content: center;
     width: 100%;
+  }
+  .number {
+    margin-left: 5rpx;
+    margin-top: 20rpx;
+    font-size:20rpx;
+    color: #999999;
+  }
+  .search-panel {
+    width: 100%;
+    background: #ffffff;
+    padding-bottom: 20rpx;
+  }
+  .search_content {
+    width: 86%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 20rpx;
+    background: #f9f9f9;
+    border-radius: 10rpx;
+    padding-left: 20rpx;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    font-size: 24rpx;
+    color: #cacaca;
+  }
+  .search-input {
+    margin-top: 7rpx;
+    margin-left: 7rpx;
+  }
+  .top {
+    width: 500rpx;
+  }
+  .circle-pic{
+    width: 90%;
+    background: #f9f9f9;
+    margin-left: 5%;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #f9f9f9;
     height: 300rpx;
-    line-height: 500rpx;
-    background: #ffffff;
-  }
-  .popup-button {
-    text-align: center;
-  }
-  .popup-button:active {
-    background: #ECECEC;
-  }
-  .tool {
-    width: 100%;
-    background: #ffffff;
-    margin-bottom: : 20rpx;
-  }
-  .tool-label {
-    margin-left: 20rpx;
-    margin-bottom: 10rpx;
-  }
-  .search-label {
-    margin-left: 35rpx;
+    margin-bottom: 20rpx;
+    background-size: cover;
   }

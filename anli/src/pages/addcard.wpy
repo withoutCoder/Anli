@@ -15,7 +15,6 @@
 
 <script>
 import wepy from 'wepy'
-import testMixin from '../mixins/test'
 
 export default class Index extends wepy.page {
   config = {
@@ -29,8 +28,6 @@ export default class Index extends wepy.page {
   }
 
   components = {}
-
-  mixins = [testMixin]
 
   data = {
     cards: [

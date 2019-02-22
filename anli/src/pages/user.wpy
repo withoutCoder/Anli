@@ -1,6 +1,5 @@
 <script>
   import wepy from 'wepy'
-  import testMixin from '../mixins/test'
 
   export default class Index extends wepy.page {
     config = {
@@ -11,6 +10,7 @@
         'wxc-flex': '../../packages/@minui/wxc-flex/dist/index',
         'wxc-avatar': '../../packages/@minui/wxc-avatar/dist/index',
         'wxc-label': '../../packages/@minui/wxc-label/dist/index',
+        'wxc-elip': '../../packages/@minui/wxc-elip/dist/index',
         'wxc-cc': '../../packages/@minui/wxc-cc/dist/index',
         'wxc-tab-label': '../../packages/@minui/wxc-tab/dist/label',
         'wxc-tab-panel': '../../packages/@minui/wxc-tab/dist/panel',
@@ -20,64 +20,28 @@
     }
     components = {}
 
-    mixins = [testMixin]
-
     data = {
       userInfo: null,
       circles: null,
-      anlis: [
+      anlis: null,
+      cards: [
         {
-          anli_id: '1',
-          anli_class: '电影',
-          user_id: '23123',
-          user_name: '小兰',
-          background: '#495060',
-          exhibits_image: 'https://images.uiiiuiii.com/wp-content/uploads/2017/10/itz-poster20171006-2-8.jpg',
-          comment: '我推荐这个作品是因为这个作品,按实际打开房间爱上就爱上离开.房间爱离开房间辣椒飒飒发，所以暗示法卡视角打开方了解阿斯利康的发生快乐绝地反击按时。'
+          cardId: '',
+          question: '你最爱的动画是？',
+          instanceId: '5c695f1e5ef7ee3850828477',
+          class: '动漫',
+          instanceImage: 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2166915083.webp',
+          answer: '中二病也要谈恋爱',
+          reason: '很好看，很纯情。'
         },
         {
-          anli_id: '2',
-          anli_class: '电影',
-          user_id: '23124',
-          user_name: '小兰',
-          background: '#495060',
-          exhibits_image: 'http://img2.mtime.cn/up/885/1114885/27CF938F-4182-41F5-BBBA-43B84DC39826_500.jpg',
-          comment: '没什么好说的'
-        },
-        {
-          anli_id: '3',
-          anli_class: '电影',
-          user_id: '23125',
-          user_name: '小兰',
-          background: '#5cadff',
-          exhibits_image: 'http://www.sinaimg.cn/dy/slidenews/4_img/2016_05/704_1844566_708349.jpg',
-          comment: '很好看哦'
-        }
-      ],
-      questions: [
-        {
-          question: '你最喜欢的一部电影是？',
+          cardId: '',
+          question: '你最喜欢的电影是？',
           class: '电影',
-          instanceid: '1',
-          background: '#495060',
-          exhibits_image: 'https://images.uiiiuiii.com/wp-content/uploads/2017/10/itz-poster20171006-2-8.jpg',
-          desc: '这是一部bulabula'
-        },
-        {
-          question: '你最喜欢的电影明星是？',
-          class: '明星',
-          instanceid: '2',
-          background: '#456734',
-          exhibits_image: 'http://img2.mtime.cn/up/885/1114885/27CF938F-4182-41F5-BBBA-43B84DC39826_500.jpg',
-          desc: '牟大逃杀电影的男主角。。'
-        },
-        {
-          question: '你看过最老的电影是？',
-          class: '电影',
-          instanceid: '3',
-          background: '#5cadff',
-          exhibits_image: 'http://www.sinaimg.cn/dy/slidenews/4_img/2016_05/704_1844566_708349.jpg',
-          desc: '这是一部阿士大夫艰苦奋斗'
+          instanceId: '5c695f155ef7ee3850825e4b',
+          instanceImage: 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p909265336.webp',
+          answer: '夺宝奇兵',
+          reason: '霍比特人最好看了！长原因测试，长句子就是这么任性。'
         }
       ]
     }
@@ -85,32 +49,12 @@
     computed = {}
 
     methods = {
-      onClick: function(e) {
-        console.log(`ComponentId:${e.detail.componentId},you selected:${e.detail.key}`)
-      },
-      recommend (id, image) {
-        this.$navigate({url: 'anli?id=' + id + '&image=' + image})
-      },
-      show_instance (instanceid, instanceimage) {
-        this.$navigate({url: 'instance?instanceid=' + instanceid + '&instanceimage=' + instanceimage})
-      },
-      toCircle (circleName) {
-        this.$navigate({url: 'circle?circleName=' + circleName})
-      },
-      addNewCard () {
-        this.$navigate({url: 'addcard'})
-      },
-      addNewInstance () {
-        this.$navigate({url: 'addInstance'})
-      },
-      addNewCircle () {
-        this.$navigate({url: 'addcircle'})
-      }
+      onClick(e) {}
     }
     getCircleList () {
       new Promise((resolve, reject) => {
         wepy.request({
-          url: 'http://192.168.0.106:8080/users/getCircleList',
+          url: this.$parent.globalData.serverUrl + 'users/getCircleList',
           data: {
             openId: this.$parent.globalData.openId
           },
@@ -127,11 +71,31 @@
     }
     events = {}
 
-    onLoad() {
-      this.userInfo = this.$parent.globalData.userInfo
+    getAnlis() {
+      new Promise((resolve, reject) => {
+        wepy.request({
+          url: this.$parent.globalData.serverUrl + 'anli/getListByOpenId',
+          data: {
+            openId: this.$parent.globalData.openId
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success (res) {
+            resolve(res.data)
+          }
+        })
+      }).then((result) => {
+        this.anlis = result
+        console.log(this.anlis)
+        this.$apply()
+      })
     }
+    onLoad() {}
 
-    onshow() {
+    onShow() {
+      this.getAnlis()
+      this.getCircleList()
       this.userInfo = this.$parent.globalData.userInfo
     }
   }
@@ -159,54 +123,77 @@
         </view>
       </view>
       <view class="item main">
-        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="c2" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
-          <wxc-tab-panel component-id="c2" tab-index="0" label="安利">
+        <wxc-tab bind:tabchange="onClick" default-index="{{0}}" component-id="userInfo" animate="{{true}}" active-text-color="#333333" text-color="#999999" active-line-color="#333333">
+          <wxc-tab-panel component-id="userInfo" tab-index="0" label="安利">
             <view class="tool">
               <wxc-flex main="left">
                 <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="筛选"></wxc-button>
-                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新安利+"></wxc-button>
+                <navigator class="label" hover-stop-propagation="true" url="addanli?anliType=0">
+                  <wxc-button size="small" plain="{{true}}" type="secondary" value="添加新安利+"></wxc-button>
+                </navigator>
               </wxc-flex>
             </view>
-            <view class="exhibits" style="background:{{anli.background}}" wx:for="{{anlis}}" wx:for-item="anli" wx:key="title" label-index="{{index}}" @tap="recommend({{anli.anli_id}},{{anli.exhibits_image}})">
+            <navigator class="anli-item" wx:for="{{anlis}}" hover-stop-propagation="true" wx:for-item="anli" wx:key="title" label-index="{{index}}" url="anli?id={{anli.id}}&image={{anli.instanceImage2}}">
               <wxc-flex dir="left">
-                <image class="exhibits-image" src="{{anli.exhibits_image}}"></image>
+                <image class="anli-image" src="{{anli.instanceImage2}}" mode="aspectFill"></image>
+                <wxc-flex dir="top" class="top">
+                  <wxc-elip line="1" class="title">{{anli.instanceName2}}</wxc-elip>
+                  <wxc-elip line="1" wx:if="{{anli.anliType==2}}" class="text">from:【{{anli.instanceName1}}】</wxc-elip>
+                  <wxc-elip line="1" wx:if="{{anli.anliType==1}}" class="text">圈子:【{{anli.circleName}}】</wxc-elip>
+                  <wxc-elip line="1" wx:if="{{anli.anliType==0}}" class="text">【直接推荐】</wxc-elip>
+                  <view class="bottom">
+                    <wxc-flex dir="left">
+                      <view class="button-class">
+                        <view class="iconfont icon-icon--" style="color:#999999;"></view>
+                        <view class="number">{{anli.shareNum}}</view>
+                      </view>
+                      <navigator class="button-class" hover-stop-propagation="true" catchtap="onClick" url="anli?id={{anli.id}}&image={{anli.instanceImage2}}&bar_index=1" hover-class="none">
+                        <view class="iconfont icon-xiaoxi" style="color:#999999;"></view>
+                        <view class="number">{{anli.commentNum}}</view>
+                      </navigator>
+                      <view class="button-class">
+                        <view class="iconfont icon-zan1" style="color:#999999;"></view>
+                        <view class="number">{{anli.likeNum}}</view>
+                      </view>
+                    </wxc-flex>
+                  </view>
+                </wxc-flex>
               </wxc-flex>
-            </view>
+            </navigator>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="c2" tab-index="1" label="卡片">
+          <wxc-tab-panel component-id="userInfo" tab-index="1" label="卡片">
             <view class="tool">
               <wxc-flex main="left">
-                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新卡片+" @tap="addNewCard()"></wxc-button>
-                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="添加新实例+" @tap="addNewInstance()"></wxc-button>
+                <navigator class="label" url="addcard">
+                  <wxc-button size="small" plain="{{true}}" type="secondary" value="添加新卡片"></wxc-button>
+                </navigator>
               </wxc-flex>
             </view>
-            <view class="exhibits" wx:for="{{questions}}" wx:for-item="question" wx:key="question_id" label-index="{{index}}" @tap="show_instance({{question.instanceid}},{{question.exhibits_image}})" style="background:{{question.background}}">
-              <wxc-flex dir="top">
-                <wxc-flex main="between">
-                  <view class="question">{{question.question}}</view>
-                  <wxc-label class="class-label" type-color="#ffffff">{{question.class}}</wxc-label>
+            <navigator class="card" wx:for="{{cards}}" hover-stop-propagation="true" wx:for-item="card" wx:key="cardId" url="instance?instanceId={{card.instanceId}}&instanceImage={{card.instanceImage}}">
+              <wxc-flex dir="left">
+                <image class="anli-image" src="{{card.instanceImage}}" mode="aspectFill"></image>
+                <wxc-flex dir="top" class="top">
+                  <wxc-elip line="1" class="title">{{card.question}}</wxc-elip>
+                  <wxc-elip line="1" class="text">{{card.answer}}</wxc-elip>
+                  <wxc-elip line="2" class="text">原因：{{card.reason}}</wxc-elip>
                 </wxc-flex>
-                <wxc-flex dir="left">
-                    <image class="exhibits-image" src="{{question.exhibits_image}}"></image>
-                    <view class="decs">{{question.desc}}</view>
-                  </wxc-flex>
-                </view>
               </wxc-flex>
-            </view>
+            </navigator>
           </wxc-tab-panel>
-          <wxc-tab-panel component-id="c2" tab-index="2" label="圈子">
+          <wxc-tab-panel component-id="userInfo" tab-index="2" label="圈子">
             <view class="tool">
               <wxc-flex dir="left">
-                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="创建新圈子" @tap="addNewCircle()"></wxc-button>
-                <wxc-button class="label" size="small" plain="{{true}}" type="secondary" value="查找新圈子"></wxc-button>
+                <navigator class="label" hover-stop-propagation="true" url="addcircle">
+                  <wxc-button size="small" plain="{{true}}" type="secondary" value="创建新圈子"></wxc-button>
+                </navigator>
               </wxc-flex>
             </view>
-            <view class="exhibits circle" wx:for="{{userInfo.circleList}}" wx:for-item="circle" wx:key="name" label-index="{{index}}" label="{{circle}}" @tap="toCircle({{circle}})">
+            <navigator class="circle-pic" wx:for="{{circles}}" wx:for-item="circle" wx:key="name" style="background-image: url({{circle.picturePath}});" url="circle?circleName={{circle.name}}" hover-class="none">
               <wxc-flex main="between">
                 <view></view>
-                <wxc-label class="class-label" type-color="#ffffff">{{circle}}</wxc-label>
+                <wxc-label class="class-label" type-color="#ffffff" text-color="#999999" type="fill">{{circle.name}}</wxc-label>
               </wxc-flex>
-            </view>
+            </navigator>
           </wxc-tab-panel>
         </wxc-tab>
       </view>
@@ -235,14 +222,24 @@
     flex-grow: 1;
   }
   .anli-item {
-    width: 98%;
-    height: 570rpx;
-    margin: 1%;
-    margin-bottom: 2%;
-    flex-grow: 0;
-    border-radius:3rpx;
-    box-shadow:0 0 7rpx #D7D7D7;
-    background: white;
+    width: 90%;
+    background: #ffffff;
+    text-align: left;
+    margin-left: 5%;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #B9B9B9;
+  }
+  .anli-image {
+    width: 130rpx;
+    height: 180rpx;
+    background: #334433;
+    margin-left: 30rpx;
+    margin-bottom: 30rpx;
+    margin-top: 30rpx;
+    border-radius: 2rpx;
+    box-shadow: 0 0 4rpx #666666;
   }
   .user-info {
     width: 98%;
@@ -255,9 +252,6 @@
     width: 180rpx;
     height: 180rpx;
     margin-top: 20rpx;
-  }
-  .name {
-    margin-top: 10rpx;
   }
   .layout {
     display: block;
@@ -272,6 +266,7 @@
   }
   .user-name {
     text-align: center;
+    color: #666666;
   }
   .label-list {
     text-align: center;
@@ -285,48 +280,84 @@
     background: #ffffff;
     margin-left: 20rpx;
     margin-top: 20rpx;
+    margin-bottom: 20rpx;
   }
-  .exhibits {
-    color: #ffffff;
+  .card {
     width: 90%;
-    background: #000000;
+    background: #ffffff;
     text-align: left;
     margin-left: 5%;
     margin-top: 20rpx;
     margin-bottom: 20rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
-  }
-  .circle {
-    height: 300rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #B9B9B9;
   }
   .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
+    box-shadow: 0 0 4rpx #bfbfbf;
   }
-  .exhibits-image {
+  .card-image {
     width: 130rpx;
     height: 180rpx;
     background: #334433;
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-    margin-bottom: 20rpx;
+    margin-left: 30rpx;
+    margin-bottom: 30rpx;
+    margin-top: 30rpx;
     border-radius: 2rpx;
-    box-shadow: 0 0 4rpx #333333;
+    box-shadow: 0 0 4rpx #666666;
   }
   .question {
-    margin-left: 20rpx;
+    margin-left: 30rpx;
     margin-top: 20rpx;
+    color: #ffffff;
+  }
+  .circle-pic{
+    width: 90%;
+    background: #f9f9f9;
+    margin-left: 5%;
+    border-radius: 20rpx;
+    box-shadow: 0 0 5rpx #999999;
+    height: 300rpx;
+    margin-bottom: 20rpx;
+    background-size: cover;
+  }
+  .class-label {
+    margin-top: 20rpx;
+    margin-right: 20rpx;
+  }
+  .title {
+    max-width: 100%;
+    margin-left: 30rpx;
+    margin-top: 35rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
     font-size: 32rpx;
   }
-  .decs {
-    margin-left: 3%;
-    margin-top: 25rpx;
+  .text {
+    width: 90%;
+    margin-left: 35rpx;
+    margin-top: 15rpx;
     letter-spacing: 2rpx;
     line-height: 34rpx;
     font-weight: 200;
+    font-size: 22rpx;
+    color: #999999;
   }
-  .class-label {
-    margin-top: 17rpx;
-    margin-right: 17rpx;
+  .top {
+    width: 500rpx;
+  }
+  .bottom {
+    width: 100%;
+    margin-top: 50rpx;
+  }
+  .button-class {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .number {
+    margin-left: 5rpx;
+    font-size:20rpx;
+    color: #999999;
   }
 </style>

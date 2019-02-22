@@ -1,114 +1,174 @@
 
+  .backcolor {
+    display: block;
+    background: #ffffff;
+  }
   .wrap {
     display: block;
-    background: #ffffff;
+    background: #f9f9f9;
+    font-size: 28rpx;
   }
   .item {
-    font-size: 28rpx;
-    line-height: 100%;
-    text-align: center;
-  }
-  .side {
     width: 100%;
-    height: 350rpx;
-    background: #ffffff;
     flex-grow: 0;
-  }
-  .main {
-    background: #ffffff;
-    flex-grow: 1;
-  }
-  .anli-item {
-    width: 98%;
-    height: 570rpx;
-    margin: 1%;
-    margin-bottom: 2%;
-    flex-grow: 0;
-    border-radius:3rpx;
-    box-shadow:0 0 7rpx #D7D7D7;
+    margin-bottom: 20rpx;
+    border-bottom: #f9f9f9;
+    border-top: #f9f9f9;
+    border-width: 1rpx 0 1rpx 0;
+    border-style: solid;
     background: white;
   }
-  .user-info {
-    width: 98%;
-    height: 96%;
-    margin: 1%;
-    margin-bottom: 2%;
-  }
-  .avatar {
-    display: inline-block;
-    width: 180rpx;
-    height: 180rpx;
+  .user-image-localtion {
+    margin-left: 35rpx;
     margin-top: 20rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
+    width: 80rpx;
+    height: 80rpx;
   }
-  .name {
-    margin-top: 10rpx;
-  }
-  .layout {
-    display: block;
-    width: 100%;
-  }
-  .user-pic {
-    width: 200rpx;
-    height: 200rpx;
-    margin: 15rpx;
-    box-shadow: 0 0 5rpx #333333;
+  .user-image {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius:40rpx;
+    box-shadow:0 0 4rpx #bfbfbf;
   }
   .user-name {
-    text-align: center;
-  }
-  .label-list {
-    text-align: center;
-    margin-top: 15rpx;
-  }
-  .label {
-    margin-left: 15rpx;
-  }
-  .tool {
-    width: 90%;
-    background: #ffffff;
-    margin-left: 20rpx;
     margin-top: 20rpx;
+    margin-left: 20rpx;
+    font-size: 28rpx;
+  }
+  .comment {
+    width: 86%;
+    margin-top: 20rpx;
+    margin-bottom: 5rpx;
+    color: #666666;
+    margin-left: 7%;
+    letter-spacing: 2rpx;
+    font-size: 28rpx;
   }
   .exhibits {
-    color: #ffffff;
     width: 90%;
-    background: #000000;
-    text-align: left;
+    background: #f9f9f9;
     margin-left: 5%;
     margin-top: 20rpx;
-    margin-bottom: 20rpx;
-    border-radius: 9rpx;
-    box-shadow: 0 0 4rpx #bfbfbf;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #efefef;
   }
   .circle {
+    width: 90%;
+    background: #f9f9f9;
+    margin-left: 5%;
+    border-radius: 9rpx;
+    box-shadow: 0 0 4rpx #f9f9f9;
     height: 300rpx;
+    margin-bottom: 20rpx;
   }
   .exhibits:active{
-    box-shadow: 0 0 10rpx #999999;
+    box-shadow: 0 0 4rpx #999999;
   }
   .exhibits-image {
     width: 130rpx;
     height: 180rpx;
     background: #334433;
-    margin-left: 20rpx;
-    margin-top: 20rpx;
-    margin-bottom: 20rpx;
-    border-radius: 2rpx;
-    box-shadow: 0 0 4rpx #333333;
+    margin-left: 30rpx;
+    margin-top: 30rpx;
+    margin-bottom: 30rpx;
+    border-radius: 4rpx;
+    box-shadow: 0 0 4rpx #666666;
   }
-  .question {
+  .label {
+    display: inline-block;
+    line-height: 30rpx;
+    padding: 0 0 0 0;
+    margin-left: 15rpx;
+  }
+  .class-label {
+    margin-top: 20rpx;
+    margin-right: 4%;
+  }
+  .circle-label {
+    margin-right: 20rpx;
+    border-radius: 10rpx;
+  }
+  .bottom {
     margin-left: 20rpx;
     margin-top: 20rpx;
+    margin-bottom: 30rpx;
+  }
+  .button-class {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .number {
+    margin-left: 5rpx;
+    margin-top: 20rpx;
+    font-size:20rpx;
+    color: #999999;
+  }
+  .search-panel {
+    width: 100%;
+    background: #ffffff;
+    padding-bottom: 20rpx;
+  }
+  .search_content {
+    width: 86%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 20rpx;
+    background: #f9f9f9;
+    border-radius: 10rpx;
+    padding-left: 20rpx;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    font-size: 24rpx;
+    color: #cacaca;
+  }
+  .search-input {
+    margin-top: 7rpx;
+    margin-left: 7rpx;
+  }
+  .title {
+    max-width: 100%;
+    margin-left: 30rpx;
+    margin-top: 35rpx;
+    letter-spacing: 2rpx;
+    line-height: 34rpx;
+    color: #666666;
     font-size: 32rpx;
   }
-  .decs {
-    margin-left: 3%;
-    margin-top: 25rpx;
+  .text {
+    width: 90%;
+    margin-left: 35rpx;
+    margin-top: 15rpx;
     letter-spacing: 2rpx;
     line-height: 34rpx;
     font-weight: 200;
+    font-size: 22rpx;
+    color: #999999;
   }
-  .class-label {
-    margin-top: 17rpx;
-    margin-right: 17rpx;
+  .top {
+    width: 500rpx;
+  }
+  .circle-pic{
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 200rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 0 3rpx #999999;
+    background-size: cover;
+  }
+  .circle-name{
+    color: #ffffff;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: 7%;
+    font-size: 48rpx;
+  }
+  .add-anli{
+    margin-top: 140rpx;
+    margin-right: 20rpx;
   }

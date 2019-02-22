@@ -1,34 +1,35 @@
 
-<form bindsubmit="formSubmit" bindreset="formReset" class="container">
-  <view class="section">
-    <view class="section__title">name</view>
-    <input name="name"/>
-  </view>
-  <view class="section section_gap">
-    <view class="section__title">color</view>
-    <wxc-flex dir="top">
-      <radio-group name="color">
-        <view>
-          <radio value="#495060"/>
-          #495060
+<view class="page">
+  <form bindsubmit="formSubmit" bindreset="formReset" class="container">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label" style="color:#666666;">圈子名称：</view>
         </view>
-        <view>
-          <radio value="#5cadff"/>
-          #5cadff
+        <view class="weui-cell__bd">
+          <input class="weui-input" name="name" style="color:#999999;" placeholder="最多输入六个字符" placeholder-style="color:#efefef" value="{{inputVal}}" maxlength="6"/>
         </view>
-        <view>
-          <radio value="#ffffff"/>
-          #ffffff
+      </view>
+    </view>
+    <view class="weui-cells__title" bindtap="chooseImage" style="color:#999999;font-size=28rpx;">点击这里选择圈子图片：</view>
+    <view class="image-select">
+      <wxc-cc>
+        <image class="image-wrap" bindtap="previewImage" id="{{tempFilePaths}}" src="{{tempFilePaths[0]}}" mode="widthFix"/>
+      </wxc-cc>
+    </view>
+    <view class="weui-cells__title">简介：</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__bd">
+          <wxc-cc>
+            <textarea class="textarea-wrap" name="detail" placeholder="" auto-height="true"/>
+          </wxc-cc>
         </view>
-        <view>
-          <radio value="#ed3f14"/>
-          #ed3f14
-        </view>
-      </radio-group>
-    </wxc-flex>
-  </view>
-  <view class="btn-area">
-    <button form-type="submit">Submit</button>
-    <button form-type="reset">Reset</button>
-  </view>
-</form>
+      </view>
+    </view>
+
+    <view class="weui-btn-area">
+      <button form-type="submit" class="weui-btn" type="primary">确定</button>
+    </view>
+  </form>
+</view>

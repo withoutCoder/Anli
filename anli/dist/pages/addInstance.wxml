@@ -1,15 +1,43 @@
 
-  <view class="container">
-    <form bindsubmit="formSubmit">
-      <wxc-input type="text" title="标题" placeholder=""/>
-      <wxc-input type="text" title="picturePath" placeholder=""/>
-      <wxc-input type="text" title="导演" placeholder=""/>
-      <wxc-input type="text" title="编剧" placeholder=""/>
-      <wxc-input type="text" title="主演" placeholder=""/>
-      <wxc-input type="text" title="上映时间" placeholder=""/>
-      <wxc-input type="text" title="片长" placeholder=""/>
-      <wxc-input type="text" title="类型" placeholder=""/>
-      <wxc-input type="text" title="介绍" placeholder=""/>
-      <button type="primary" size="default" plain="false" bindtap="createInstance" data-wpycreateinstance-a="">提交</button>
-    </form>
+  <view class="page">
+  <form bindsubmit="formSubmit" bindreset="formReset" class="container">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label" style="color:#666666;">实例名称：</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" name="name" style="color:#999999;" placeholder="" placeholder-style="color:#efefef" value="{{name}}"/>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label" style="color:#666666;">所属圈子：</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" name="classId" style="color:#999999;" placeholder-style="color:#efefef" placeholder="没有圈子将直接创建"/>
+        </view>
+      </view>
+    </view>
+    <view class="weui-cells__title" bindtap="chooseImage" style="color:#999999;font-size=28rpx;">点击这里选择封面：</view>
+    <view class="image-select">
+      <wxc-cc>
+        <image class="image-wrap" bindtap="previewImage" id="{{tempFilePaths}}" src="{{tempFilePaths[0]}}" mode="widthFix"/>
+      </wxc-cc>
+    </view>
+    <view class="weui-cells__title">简介：</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__bd">
+          <wxc-cc>
+            <textarea class="textarea-wrap" name="detail" placeholder="" auto-height="true"/>
+          </wxc-cc>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-btn-area">
+      <button form-type="submit" class="weui-btn" type="primary">确定</button>
+    </view>
+  </form>
   </view>

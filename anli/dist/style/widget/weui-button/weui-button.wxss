@@ -5,5 +5,5 @@
   margin-top: 0;
 }
 .weui-btn-area {
-  margin: 1.17647059em 15px 0.3em;
+  margin: 0.71428571em 15px 0.3em;
 }
